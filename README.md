@@ -33,17 +33,17 @@ This program requires the Nvidia CUDA compiler, and OpenMP.
 ### doubling
 This program implements the full algorithm A. Final conversion from the adjacency matrix to source/destination pairs is performed on the GPU.
 
-This program requires the Nvidia CUDA compiler.
+This program requires the [Nvidia CUDA compiler](https://developer.nvidia.com/cuda-downloads): NVCC.
 
 ### iterative
 This program implements the full algorithm B.
 
-This program requires the Nvidia CUDA compiler.
+This program requires the [Nvidia CUDA compiler](https://developer.nvidia.com/cuda-downloads): NVCC.
 
 ### serial
 This program implements algorithm C.
 
-Only the GNU C++ compiler is required.
+Only the [GNU C++ compiler](https://gcc.gnu.org/) is required.
 
 ## Building
 To build everything, type:
