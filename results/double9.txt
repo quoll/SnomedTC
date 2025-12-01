@@ -1,0 +1,23 @@
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 9695.77 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 29.3688 ms
+CSR graph over T:
+  index_size (|T|)      : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 63.124 ms
+Step upload_csr_to_device: 1075.09 ms
+Algorithm A initial fill: 1.17158 ms
+Algorithm A iteration 1 took 26.4639 ms, changed=true
+Algorithm A iteration 2 took 25.5291 ms, changed=true
+Algorithm A iteration 3 took 24.9964 ms, changed=true
+Algorithm A iteration 4 took 24.999 ms, changed=true
+Algorithm A iteration 5 took 24.9989 ms, changed=true
+Algorithm A iteration 6 took 25.0158 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 3585 ms
+Writing output file: 4368.74 ms

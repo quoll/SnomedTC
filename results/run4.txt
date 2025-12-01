@@ -1,0 +1,49 @@
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 4152.86 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 16.718 ms
+CSR graph over T:
+  index_size (|T|)      : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 50.7888 ms
+Step upload_csr_to_device: 152.046 ms
+Algorithm A initial fill: 0.539698 ms
+Algorithm A iteration 1 took 15.8286 ms, changed=true
+Algorithm A iteration 2 took 19.1939 ms, changed=true
+Algorithm A iteration 3 took 31.4715 ms, changed=true
+Algorithm A iteration 4 took 39.0245 ms, changed=true
+Algorithm A iteration 5 took 39.7583 ms, changed=true
+Algorithm A iteration 6 took 39.5661 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert_closure_to_pairs: 6425.23 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 6818.69 ms
+Step allocate_bitset_matrix_device (B): 0.813995 ms
+Algorithm B initial fill: 2.0754 ms, changed=true
+Algorithm B iteration 1 took 7.9895 ms, changed=true
+Algorithm B iteration 2 took 7.80763 ms, changed=true
+Algorithm B iteration 3 took 7.42634 ms, changed=true
+Algorithm B iteration 4 took 7.1665 ms, changed=true
+Algorithm B iteration 5 took 7.0472 ms, changed=true
+Algorithm B iteration 6 took 6.98707 ms, changed=true
+Algorithm B iteration 7 took 6.96954 ms, changed=true
+Algorithm B iteration 8 took 6.96277 ms, changed=true
+Algorithm B iteration 9 took 6.95882 ms, changed=true
+Algorithm B iteration 10 took 6.95619 ms, changed=true
+Algorithm B iteration 11 took 6.95777 ms, changed=true
+Algorithm B iteration 12 took 6.95369 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert_closure_to_pairs: 5916.45 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 6208.39 ms
+Algorithm C build_adjacency_from_edges: 211.189 ms
+Algorithm C compute_transitive_closure_serial: 18802 ms
+Algorithm C flatten_closure to pairs: 476.23 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 19489.5 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 1480.15 ms
