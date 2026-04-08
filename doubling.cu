@@ -30,12 +30,14 @@ struct ColumnIndices {
     int active_idx = -1;
 };
 
+// compressed sparse row (CSR) representation of a boolean matrix stored on the host
 struct CSRGraph {
     int index_size = 0;                 // number of nodes in T
     std::vector<int> row_offsets;       // size index_size + 1
     std::vector<int> col_indices;       // size = #internal edges
 };
 
+// CSR representation of a boolean matrix stored on the GPU
 struct CSRDevice {
     int index_size = 0;
     int nnz = 0;
@@ -43,17 +45,21 @@ struct CSRDevice {
     int* d_col_indices = nullptr;
 };
 
+// SNOMED ids are sparse. Map each SNOMED id to an integer in the range 0-N
+// where N is the number of SNOMED ids
 struct DestMapping {
-    std::unordered_map<std::int64_t, int> id_to_index; // destId -> t_idx
+    std::unordered_map<std::int64_t, int> id_to_index; // destinationId -> t_idx
     std::vector<std::int64_t> index_to_id;             // t_idx -> destinationId
 };
 
+// CSR of edges that terminate paths through the graph, on the host
 struct ExternalCSRHost {
     std::vector<std::int64_t> src_ids;   // unique external sourceIds
     std::vector<int> row_offsets;        // size = num_srcs + 1
     std::vector<int> dst_indices;        // internal t_idx for each edge
 };
 
+// CSR of edges that terminate paths through the graph, on the GPU
 struct ExternalCSRDevice {
     int num_srcs = 0;
     int* d_row_offsets = nullptr;
@@ -61,11 +67,14 @@ struct ExternalCSRDevice {
     std::int64_t* d_src_ids = nullptr;
 };
 
+// mapping of index values 0-index_size to the associated SNOMED id, on the GPU
 struct DestMappingDevice {
     int index_size = 0;
     std::int64_t* d_index_to_id = nullptr;
 };
 
+// This could be std::pair<std::int64_t, std::int64_t> like Edge, but does not
+// provide layout guarantees. A pair will often work, but this is safer.
 struct DevicePair {
     std::int64_t src;
     std::int64_t dst;
@@ -640,6 +649,10 @@ __global__ void external_count_kernel(const int* __restrict__ ext_row_offsets,
     }
 }
 
+// Finds all of the destinations for a given source, when the source is a
+// value that never appears as a destination (an external edge source).
+// All destinations from the source are appended with the source to the
+// out_pairs result
 __global__ void external_emit_kernel(const int* __restrict__ ext_row_offsets,
                                      const int* __restrict__ ext_dst_indices,
                                      int num_srcs,
@@ -746,7 +759,16 @@ bool run_algoA_iterations(BitsetMatrixDevice &closure_in,
     return (h_changed != 0);
 }
 
-
+// Connects all of the external (path-terminating) edges to the rest of the graph, on the GPU.
+// Return the result to the host. This means:
+// 1. converting the external edges to CSR form
+// 2. uploading those external edges and the SNOMED-id mapping to the GPU
+// 3. determining the row sizes needed for the final results
+// 4. finding the locations of the row starts for the CSR representation
+// 5. allocating the list for the CSR data
+// 6. fill the CSR array
+// 7. copy the CSR representation from the device to the host
+// 8. convert the DevicePair records (src->dest) to Edge pair values for stl flexibility
 ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
                                           const DestMapping &mapping,
                                           const std::vector<Edge> &external_edges) {
@@ -866,7 +888,8 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
  ***********************************************/
 
 // Helper function to call fn(dst_idx) for each set bit in row `row_idx`.
-template <typename Fn>
+// Iterates across the row SERIALLY
+Template <typename Fn>
 static void for_each_set_bit_in_row(const std::vector<unsigned int> &closure_host,
                                     int index_size, std::size_t words_per_row,
                                     int row_idx, Fn &&fn) {
@@ -890,6 +913,9 @@ static void for_each_set_bit_in_row(const std::vector<unsigned int> &closure_hos
     }
 }
 
+// retrieves the matrix containing the graph of non-terminal (non-external) edges
+// converts this matrix into source/destination pairs of connected SNOMED codes
+// conversion is SERIAL
 ClosurePairs convert_internal_closure_to_pairs(const BitsetMatrixDevice &closure_dev,
                                                const DestMapping &mapping) {
     ClosurePairs result;
