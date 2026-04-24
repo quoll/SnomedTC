@@ -157,13 +157,9 @@ DestMapping build_dest_mapping(const std::vector<Edge> &edges) {
 
 // ----- CSR + external edges -----
 
-CSRGraph build_csr_internal(
-    const std::vector<Edge> &edges,
-    const DestMapping &mapping,
-    std::size_t &num_internal_edges,
-    std::size_t &num_external_edges,
-    std::vector<Edge> &external_edges_out)
-{
+CSRGraph build_csr_internal(const std::vector<Edge> &edges, const DestMapping &mapping,
+                            std::size_t &num_internal_edges, std::size_t &num_external_edges,
+                            std::vector<Edge> &external_edges_out) {
     const auto &index_to_id = mapping.index_to_id;
     const auto &id_to_index = mapping.id_to_index;
     const int index_size = static_cast<int>(index_to_id.size());
