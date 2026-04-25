@@ -75,6 +75,29 @@ ExternalCSRHost build_external_csr(
     return csr;
 }
 
+DestMappingDevice upload_dest_mapping_device(const DestMapping &mapping) {
+    DestMappingDevice d;
+    d.index_size = static_cast<int>(mapping.index_to_id.size());
+    if (d.index_size == 0) return d;
+
+    check_cuda(cudaMalloc(&d.d_index_to_id,
+                          d.index_size * sizeof(std::int64_t)),
+               "cudaMalloc d_index_to_id");
+    check_cuda(cudaMemcpy(d.d_index_to_id,
+                          mapping.index_to_id.data(),
+                          d.index_size * sizeof(std::int64_t),
+                          cudaMemcpyHostToDevice),
+               "cudaMemcpy index_to_id");
+
+    return d;
+}
+
+void free_dest_mapping_device(DestMappingDevice &d) {
+    if (d.d_index_to_id) cudaFree(d.d_index_to_id);
+    d.d_index_to_id = nullptr;
+    d.index_size = 0;
+}
+
 CSRDevice upload_external_csr_to_device(const ExternalCSRHost &csr) {
     CSRDevice d;
     d.num_rows = static_cast<int>(csr.src_ids.size());
@@ -143,15 +166,16 @@ __global__ void external_count_kernel(const int* __restrict__ ext_row_offsets,
 
 // Finds all of the destinations for a given source, when the source is a
 // value that never appears as a destination (an external edge source).
-// Destination indices are written to out_dests; the host maps them to SNOMED
-// ids after the fact. row_cursors tracks the write position per source.
+// Destination SNOMED ids are written to out_dests; row_cursors tracks the
+// write position per source so that the host can pair each dst with its src.
 __global__ void external_emit_kernel(const int* __restrict__ ext_row_offsets,
                                      const int* __restrict__ ext_dst_indices,
                                      int num_srcs,
                                      const unsigned int* __restrict__ closure_in,
                                      int index_size, int words_per_row,
+                                     const std::int64_t* __restrict__ index_to_id,
                                      int* __restrict__ row_cursors,
-                                     int* __restrict__ out_dests) {
+                                     std::int64_t* __restrict__ out_dests) {
     int s = blockIdx.x;
     if (s >= num_srcs) return;
 
@@ -175,7 +199,7 @@ __global__ void external_emit_kernel(const int* __restrict__ ext_row_offsets,
             acc |= closure_in[d_offset + w];
         }
 
-        // Turn bits in `acc` into destination indices.
+        // Turn bits in `acc` into destination ids.
         while (acc) {
             int bit = __ffs(acc) - 1;
             acc &= (acc - 1);
@@ -186,7 +210,7 @@ __global__ void external_emit_kernel(const int* __restrict__ ext_row_offsets,
             }
 
             int pos = atomicAdd(&row_cursors[s], 1);
-            out_dests[pos] = dst_idx;
+            out_dests[pos] = index_to_id[dst_idx];
         }
     }
 }
@@ -261,14 +285,13 @@ ClosurePairs convert_internal_closure_to_pairs(const BitsetMatrixDevice &closure
 // Connects all of the external (path-terminating) edges to the rest of the graph, on the GPU.
 // Return the result to the host. This means:
 // 1. converting the external edges to CSR form
-// 2. uploading those external edges to the GPU
+// 2. uploading those external edges and the SNOMED-id mapping to the GPU
 // 3. determining the row sizes needed for the final results
 // 4. finding the locations of the row starts for the output via prefix sum (on host)
-// 5. allocating the destination index array and row cursors on the device
-// 6. emitting destination indices into the output array
-// 7. copying the destination indices back to the host
-// 8. pairing each source id (already on host) with its destination ids,
-//    mapping destination indices to SNOMED ids on the CPU
+// 5. allocating the destination id array and row cursors on the device
+// 6. emitting destination ids into the output array
+// 7. copying the destination ids back to the host
+// 8. pairing each source id (already on host) with its destination ids
 ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
                                           const DestMapping &mapping,
                                           const std::vector<Edge> &external_edges) {
@@ -284,8 +307,9 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
         return result;
     }
 
-    // 2. Upload external CSR to device
+    // 2. Upload external CSR and mapping to device
     CSRDevice ext_csr_dev = upload_external_csr_to_device(ext_csr_host);
+    DestMappingDevice mapping_dev = upload_dest_mapping_device(mapping);
 
     const int num_srcs = ext_csr_dev.num_rows;
     const int index_size = closure_dev.index_size;
@@ -329,12 +353,13 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
     const int total_pairs = offsets[num_srcs];
     if (total_pairs == 0) {
         free_csr_device(ext_csr_dev);
+        free_dest_mapping_device(mapping_dev);
         return result;
     }
 
-    // 5. Allocate output destination indices + row cursors on device
-    int* d_dests = nullptr;
-    check_cuda(cudaMalloc(&d_dests, total_pairs * sizeof(int)),
+    // 5. Allocate output destinations + row cursors on device
+    std::int64_t* d_dests = nullptr;
+    check_cuda(cudaMalloc(&d_dests, total_pairs * sizeof(std::int64_t)),
                "cudaMalloc d_dests");
 
     int* d_row_cursors = nullptr;
@@ -345,7 +370,7 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
                           cudaMemcpyHostToDevice),
                "cudaMemcpy d_row_cursors");
 
-    // 6. Emit destination indices
+    // 6. Emit destination ids
     external_emit_kernel<<<grid, block>>>(
         ext_csr_dev.d_row_offsets,
         ext_csr_dev.d_col_indices,
@@ -353,30 +378,30 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
         closure_dev.data,
         index_size,
         words_per_row,
+        mapping_dev.d_index_to_id,
         d_row_cursors,
         d_dests
     );
     check_cuda(cudaDeviceSynchronize(), "external_emit_kernel");
 
-    // 7. Copy destination indices back to host
-    std::vector<int> dests_host(total_pairs);
+    // 7. Copy destination ids back to host
+    std::vector<std::int64_t> dests_host(total_pairs);
     check_cuda(cudaMemcpy(dests_host.data(), d_dests,
-                          total_pairs * sizeof(int),
+                          total_pairs * sizeof(std::int64_t),
                           cudaMemcpyDeviceToHost),
                "cudaMemcpy dests_host");
     cudaFree(d_dests);
     cudaFree(d_row_cursors);
 
     free_csr_device(ext_csr_dev);
+    free_dest_mapping_device(mapping_dev);
 
-    // 8. Pair each source id (from host) with its destination ids,
-    //    mapping destination indices to SNOMED ids on the CPU.
-    const std::int64_t* id_data = mapping.index_to_id.data();
+    // 8. Pair each source id (from host) with its destination ids
     result.reserve(total_pairs);
     for (int s = 0; s < num_srcs; ++s) {
         const std::int64_t src_id = ext_csr_host.src_ids[s];
         for (int i = offsets[s]; i < offsets[s + 1]; ++i) {
-            result.emplace_back(src_id, id_data[dests_host[i]]);
+            result.emplace_back(src_id, dests_host[i]);
         }
     }
 
