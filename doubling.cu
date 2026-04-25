@@ -544,8 +544,7 @@ __global__ void external_count_kernel(const int* __restrict__ ext_row_offsets,
                                       int num_srcs,
                                       const unsigned int* __restrict__ closure_in,
                                       int index_size, int words_per_row,
-                                      unsigned int* __restrict__ counts,
-                                      unsigned int* __restrict__ merged_rows) {
+                                      unsigned int* __restrict__ counts) {
     int s = blockIdx.x;
     if (s >= num_srcs) return;
 
@@ -575,7 +574,6 @@ __global__ void external_count_kernel(const int* __restrict__ ext_row_offsets,
             acc |= closure_in[d_offset + w];
         }
 
-        merged_rows[static_cast<std::size_t>(s) * words_per_row + w] = acc;
         local += __popc(acc);
     }
 
@@ -599,17 +597,37 @@ __global__ void external_count_kernel(const int* __restrict__ ext_row_offsets,
 // value that never appears as a destination (an external edge source).
 // Destination SNOMED ids are written to out_dests; row_cursors tracks the
 // write position per source so that the host can pair each dst with its src.
-__global__ void external_emit_kernel(int num_srcs,
+__global__ void external_emit_kernel(const int* __restrict__ ext_row_offsets,
+                                     const int* __restrict__ ext_dst_indices,
+                                     int num_srcs,
+                                     const unsigned int* __restrict__ closure_in,
                                      int index_size, int words_per_row,
-                                     const unsigned int* __restrict__ merged_rows,
                                      const std::int64_t* __restrict__ index_to_id,
                                      int* __restrict__ row_cursors,
                                      std::int64_t* __restrict__ out_dests) {
     int s = blockIdx.x;
     if (s >= num_srcs) return;
 
+    int start = ext_row_offsets[s];
+    int end   = ext_row_offsets[s + 1];
+
     for (int w = threadIdx.x; w < words_per_row; w += blockDim.x) {
-        unsigned int acc = merged_rows[static_cast<std::size_t>(s) * words_per_row + w];
+        unsigned int acc = 0u;
+
+        // OR together the rows for each internal dst, plus the direct dst bit.
+        for (int e = start; e < end; ++e) {
+            int d_idx = ext_dst_indices[e];
+
+            int word_for_d = d_idx / kBitsPerWord;
+            int bit_for_d  = d_idx % kBitsPerWord;
+            if (word_for_d == w) {
+                acc |= (1u << bit_for_d);
+            }
+
+            const std::size_t d_offset =
+                static_cast<std::size_t>(d_idx) * words_per_row;
+            acc |= closure_in[d_offset + w];
+        }
 
         // Turn bits in `acc` into destination ids.
         while (acc) {
@@ -683,7 +701,7 @@ bool run_algoA_iterations(BitsetMatrixDevice &closure_in,
 // Return the result to the host. This means:
 // 1. converting the external edges to CSR form
 // 2. uploading those external edges and the SNOMED-id mapping to the GPU
-// 3. determining the row sizes needed for the final results, saving merged rows for reuse
+// 3. determining the row sizes needed for the final results
 // 4. finding the locations of the row starts for the output via prefix sum (on host)
 // 5. allocating the destination id array and row cursors on the device
 // 6. emitting destination ids into the output array
@@ -712,18 +730,12 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
     const int index_size = closure_dev.index_size;
     const int words_per_row = static_cast<int>(closure_dev.words_per_row);
 
-    // 3. Count how many pairs we will emit per external source,
-    //    and save the merged rows for reuse by the emit kernel.
+    // 3. Count how many pairs we will emit per external source
     unsigned int* d_counts = nullptr;
     check_cuda(cudaMalloc(&d_counts, num_srcs * sizeof(unsigned int)),
                "cudaMalloc d_counts");
     check_cuda(cudaMemset(d_counts, 0, num_srcs * sizeof(unsigned int)),
                "cudaMemset d_counts");
-
-    unsigned int* d_merged = nullptr;
-    check_cuda(cudaMalloc(&d_merged,
-                          static_cast<std::size_t>(num_srcs) * words_per_row * sizeof(unsigned int)),
-               "cudaMalloc d_merged");
 
     dim3 block(256);
     dim3 grid(num_srcs);
@@ -735,8 +747,7 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
         closure_dev.data,
         index_size,
         words_per_row,
-        d_counts,
-        d_merged
+        d_counts
     );
     check_cuda(cudaDeviceSynchronize(), "external_count_kernel");
 
@@ -756,7 +767,6 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
 
     const int total_pairs = offsets[num_srcs];
     if (total_pairs == 0) {
-        cudaFree(d_merged);
         free_csr_device(ext_csr_dev);
         free_dest_mapping_device(mapping_dev);
         return result;
@@ -775,12 +785,14 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
                           cudaMemcpyHostToDevice),
                "cudaMemcpy d_row_cursors");
 
-    // 6. Emit destination ids using the pre-computed merged rows
+    // 6. Emit destination ids
     external_emit_kernel<<<grid, block>>>(
+        ext_csr_dev.d_row_offsets,
+        ext_csr_dev.d_col_indices,
         num_srcs,
+        closure_dev.data,
         index_size,
         words_per_row,
-        d_merged,
         mapping_dev.d_index_to_id,
         d_row_cursors,
         d_dests
@@ -795,7 +807,6 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
                "cudaMemcpy dests_host");
     cudaFree(d_dests);
     cudaFree(d_row_cursors);
-    cudaFree(d_merged);
 
     free_csr_device(ext_csr_dev);
     free_dest_mapping_device(mapping_dev);
