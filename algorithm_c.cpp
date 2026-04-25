@@ -1,5 +1,5 @@
 #include "serial.h"
-#include "util.h"
+#include "graph_util.h"
 
 #include <fstream>
 #include <stdexcept>

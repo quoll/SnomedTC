@@ -14,7 +14,7 @@ NVCCFLAGS_ARCH := \
 NVCCFLAGS := $(NVCCFLAGS_COMMON) $(NVCCFLAGS_ARCH)
 
 CU_SRCS  := snomed_tc.cu algorithm_a.cu algorithm_b.cu resulttx.cu doubling.cu iterative.cu
-CPP_SRCS := algorithm_c.cpp serial.cpp util.cpp
+CPP_SRCS := algorithm_c.cpp serial.cpp graph_util.cpp
 CU_OBJS  := $(CU_SRCS:.cu=.o)
 CPP_OBJS := $(CPP_SRCS:.cpp=.o)
 
@@ -22,16 +22,16 @@ CPP_OBJS := $(CPP_SRCS:.cpp=.o)
 
 all: snomed_tc algorithm_a algorithm_b algorithm_c
 
-snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o serial.o util.o
+snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o serial.o graph_util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
-algorithm_a: algorithm_a.o resulttx.o doubling.o util.o
+algorithm_a: algorithm_a.o resulttx.o doubling.o graph_util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
-algorithm_b: algorithm_b.o resulttx.o iterative.o util.o
+algorithm_b: algorithm_b.o resulttx.o iterative.o graph_util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
-algorithm_c: algorithm_c.o serial.o util.o
+algorithm_c: algorithm_c.o serial.o graph_util.o
 	$(CPP) -o $@ $^
 
 %.o: %.cu

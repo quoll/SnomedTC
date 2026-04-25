@@ -1,6 +1,6 @@
 #include "doubling.cuh"
 #include "resulttx.cuh"
-#include "util.h"
+#include "graph_util.h"
 
 #include <fstream>
 #include <stdexcept>
