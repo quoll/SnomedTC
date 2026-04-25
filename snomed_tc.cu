@@ -2,28 +2,21 @@
 #include "iterative.cuh"
 #include "resulttx.cuh"
 #include "serial.h"
+#include "util.h"
 
 #include <fstream>
 #include <string>
 
-/*************************************
- *  Host wrappers for algorithm A
- *************************************/
-
+// Algorithm A
 // run_algoA_initial and run_algoA_iterations are provided by doubling.cu
 
-/*************************************
- *  Host wrappers for algorithm B
- *************************************/
-
+// Algorithm B
 // run_algoB_initial and run_algoB_iterations are provided by iterative.cu
 
+// Algorithm C
 // build_adjacency_from_edges, compute_transitive_closure_serial, flatten_closure
 // are provided by serial.cpp
 
-/*****************
- *  Main program
- *****************/
 
 int main(int argc, char **argv) {
     if (argc != 3) {

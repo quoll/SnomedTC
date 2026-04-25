@@ -13,21 +13,26 @@ NVCCFLAGS_ARCH := \
 
 NVCCFLAGS := $(NVCCFLAGS_COMMON) $(NVCCFLAGS_ARCH)
 
-SRCS   := snomed_tc.cu algorithm_a.cu algorithm_b.cu resulttx.cu doubling.cu iterative.cu
-OBJS   := $(SRCS:.cu=.o)
+CU_SRCS  := snomed_tc.cu algorithm_a.cu algorithm_b.cu resulttx.cu doubling.cu iterative.cu
+CPP_SRCS := algorithm_c.cpp serial.cpp util.cpp
+CU_OBJS  := $(CU_SRCS:.cu=.o)
+CPP_OBJS := $(CPP_SRCS:.cpp=.o)
 
 .PHONY: all clean
 
 all: snomed_tc algorithm_a algorithm_b algorithm_c
 
-snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o serial.o
+snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o serial.o util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
-algorithm_a: algorithm_a.o resulttx.o doubling.o
+algorithm_a: algorithm_a.o resulttx.o doubling.o util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
-algorithm_b: algorithm_b.o resulttx.o doubling.o iterative.o
+algorithm_b: algorithm_b.o resulttx.o iterative.o util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
+
+algorithm_c: algorithm_c.o serial.o util.o
+	$(CPP) -o $@ $^
 
 %.o: %.cu
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
@@ -35,9 +40,5 @@ algorithm_b: algorithm_b.o resulttx.o doubling.o iterative.o
 %.o: %.cpp
 	$(CPP) $(CPPFLAGS) -c $< -o $@
 
-algorithm_c: algorithm_c.o serial.o
-	$(CPP) -o $@ $^
-
 clean:
-	rm -f $(OBJS) $(TARGET)
-
+	rm -f $(CU_OBJS) $(CPP_OBJS) snomed_tc algorithm_a algorithm_b algorithm_c

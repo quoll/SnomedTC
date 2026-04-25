@@ -1,76 +1,9 @@
 #include "serial.h"
+#include "util.h"
 
 #include <fstream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
-
-// ----- Parsing -----
-
-static std::vector<std::string> split_tab(const std::string &line) {
-    std::vector<std::string> fields;
-    std::string field;
-    std::stringstream ss(line);
-    while (std::getline(ss, field, '\t')) {
-        fields.push_back(field);
-    }
-    return fields;
-}
-
-static ColumnIndices parse_header(const std::string &header_line) {
-    auto fields = split_tab(header_line);
-    ColumnIndices idx;
-
-    for (int i = 0; i < static_cast<int>(fields.size()); ++i) {
-        const auto &name = fields[i];
-        if (name == "sourceId") {
-            idx.source_idx = i;
-        } else if (name == "destinationId") {
-            idx.dest_idx = i;
-        } else if (name == "typeId") {
-            idx.type_idx = i;
-        } else if (name == "active") {
-            idx.active_idx = i;
-        }
-    }
-
-    if (idx.source_idx < 0 || idx.dest_idx < 0 || idx.type_idx < 0 || idx.active_idx < 0) {
-        throw std::runtime_error("Failed to locate sourceId/destinationId/typeId/active in header");
-    }
-
-    return idx;
-}
-
-static std::vector<Edge> load_isA_edges(const std::string &input_path) {
-    std::ifstream in(input_path);
-    if (!in) throw std::runtime_error("Failed to open input file: " + input_path);
-
-    std::string line;
-    if (!std::getline(in, line)) throw std::runtime_error("Input file is empty");
-
-    ColumnIndices idx = parse_header(line);
-    int max_idx = std::max({idx.source_idx, idx.dest_idx, idx.type_idx, idx.active_idx});
-
-    std::vector<Edge> edges;
-    std::size_t total_rows = 0;
-
-    while (std::getline(in, line)) {
-        if (line.empty()) continue;
-        ++total_rows;
-
-        auto fields = split_tab(line);
-        if (max_idx >= static_cast<int>(fields.size())) continue;
-
-        if (fields[idx.type_idx] == kIsATypeId && fields[idx.active_idx] == "1") {
-            edges.push_back(Edge{std::stoll(fields[idx.source_idx]), std::stoll(fields[idx.dest_idx])});
-        }
-    }
-
-    std::cout << "Total data rows (excluding header): " << total_rows << "\n";
-    std::cout << "Loaded isA edges (src,dst pairs): " << edges.size() << "\n";
-
-    return edges;
-}
 
 /*****************
  *  Main program
@@ -78,7 +11,7 @@ static std::vector<Edge> load_isA_edges(const std::string &input_path) {
 
 int main(int argc, char **argv) {
     if (argc != 3) {
-        std::cerr << "Usage: snomed_tc <input_snomed_file> <output_file>\n";
+        std::cerr << "Usage: algorithm_c <input_snomed_file> <output_file>\n";
         return 1;
     }
 

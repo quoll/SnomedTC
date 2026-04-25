@@ -1,17 +1,13 @@
-#include "doubling.cuh"
 #include "iterative.cuh"
 #include "resulttx.cuh"
+#include "util.h"
 
 #include <fstream>
 #include <string>
 
-/*****************
- *  Main program
- *****************/
-
 int main(int argc, char **argv) {
     if (argc != 3) {
-        std::cerr << "Usage: snomed_tc <input_snomed_file> <output_file>\n";
+        std::cerr << "Usage: algorithm_b <input_snomed_file> <output_file>\n";
         return 1;
     }
 
