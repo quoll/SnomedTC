@@ -60,11 +60,6 @@ struct ExternalCSRHost {
     std::vector<int> dst_indices;        // internal t_idx for each edge
 };
 
-// mapping of index values 0-index_size to the associated SNOMED id, on the GPU
-struct DestMappingDevice {
-    int index_size = 0;
-    std::int64_t* d_index_to_id = nullptr;
-};
 
 using Edge = std::pair<std::int64_t, std::int64_t>;  // (src_id, dst_id)
 using ClosurePairs = std::vector<Edge>;
