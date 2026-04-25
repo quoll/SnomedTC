@@ -13,20 +13,20 @@ NVCCFLAGS_ARCH := \
 
 NVCCFLAGS := $(NVCCFLAGS_COMMON) $(NVCCFLAGS_ARCH)
 
-SRCS   := snomed_tc.cu algorithm_a.cu algorithm_b.cu resulttx.cu doubling.cu
+SRCS   := snomed_tc.cu algorithm_a.cu algorithm_b.cu resulttx.cu doubling.cu iterative.cu
 OBJS   := $(SRCS:.cu=.o)
 
 .PHONY: all clean
 
 all: snomed_tc algorithm_a algorithm_b algorithm_c
 
-snomed_tc: snomed_tc.o resulttx.o doubling.o
+snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
 algorithm_a: algorithm_a.o resulttx.o doubling.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
-algorithm_b: algorithm_b.o
+algorithm_b: algorithm_b.o resulttx.o doubling.o iterative.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cu
