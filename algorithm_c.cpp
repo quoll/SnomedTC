@@ -1,39 +1,13 @@
-#include <algorithm>
-#include <chrono>
-#include <cstdint>
+#include "serial.h"
+
 #include <fstream>
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-
-// Note: comments and printed results includes unicode characters: ⋃∈∉
-
-// SNOMED 'isA' relationship typeId.
-constexpr const char* kIsATypeId = "116680003";
-
-struct ColumnIndices {
-    int source_idx = -1;
-    int dest_idx   = -1;
-    int type_idx   = -1;
-    int active_idx = -1;
-};
-
-using Edge = std::pair<std::int64_t, std::int64_t>;  // (src_id, dst_id)
-using ClosurePairs = std::vector<Edge>;
-
-using AdjMap = std::unordered_map<std::int64_t, std::unordered_set<std::int64_t>>; // (src_id -> set(dst_id))
-
-// small timing helper
-using Clock = std::chrono::steady_clock;
 
 // ----- Parsing -----
 
-std::vector<std::string> split_tab(const std::string &line) {
+static std::vector<std::string> split_tab(const std::string &line) {
     std::vector<std::string> fields;
     std::string field;
     std::stringstream ss(line);
@@ -43,7 +17,7 @@ std::vector<std::string> split_tab(const std::string &line) {
     return fields;
 }
 
-ColumnIndices parse_header(const std::string &header_line) {
+static ColumnIndices parse_header(const std::string &header_line) {
     auto fields = split_tab(header_line);
     ColumnIndices idx;
 
@@ -67,7 +41,7 @@ ColumnIndices parse_header(const std::string &header_line) {
     return idx;
 }
 
-std::vector<Edge> load_isA_edges(const std::string &input_path) {
+static std::vector<Edge> load_isA_edges(const std::string &input_path) {
     std::ifstream in(input_path);
     if (!in) throw std::runtime_error("Failed to open input file: " + input_path);
 
@@ -96,93 +70,6 @@ std::vector<Edge> load_isA_edges(const std::string &input_path) {
     std::cout << "Loaded isA edges (src,dst pairs): " << edges.size() << "\n";
 
     return edges;
-}
-
-// ----- Host Adjacency -----
-AdjMap build_adjacency_from_edges(const std::vector<Edge> &edges) {
-    AdjMap conn;
-    conn.reserve(edges.size() / 2); // very rough guess
-
-    for (const auto &e : edges) {
-        const auto src = e.first;
-        const auto dst = e.second;
-        conn[src].insert(dst);
-    }
-
-    return conn;
-}
-
-/**************************************************************
- * Host iteration algorithm C (serialized form of Algorithm A)
- **************************************************************/
-AdjMap compute_transitive_closure_serial(AdjMap conn, int max_iterations = 64) {
-    for (int iter = 0; iter < max_iterations; ++iter) {
-        AdjMap nxt;          // new edges of doubled length
-        bool any_new = false;
-
-        for (auto &entry : conn) {
-            const std::int64_t s = entry.first;
-            auto &tset = entry.second;
-
-            for (const auto t : tset) {
-                auto it_tTargets = conn.find(t);
-                if (it_tTargets == conn.end()) {
-                    continue; // t is not a source; nothing to join
-                }
-
-                const auto &tTargets = it_tTargets->second;
-
-                for (const auto u : tTargets) {
-                    // Check if we already know s -> u from previous iterations
-                    auto &s_targets = conn[s];
-                    if (s_targets.find(u) != s_targets.end()) {
-                        continue;
-                    }
-
-                    // Check if it's already scheduled to be added this iteration
-                    auto &nxt_targets = nxt[s];
-                    auto [_, inserted] = nxt_targets.insert(u);
-                    if (inserted) {
-                        any_new = true;
-                    }
-                }
-            }
-        }
-
-        if (!any_new) {
-            break; // reached fixed point
-        }
-
-        // Merge nxt into conn
-        for (auto &entry : nxt) {
-            const std::int64_t s = entry.first;
-            auto &new_targets = entry.second;
-            auto &existing = conn[s];  // creates empty set if absent
-            existing.insert(new_targets.begin(), new_targets.end());
-        }
-    }
-
-    return conn;
-}
-
-/****************************************************************
- *  Host conversion of map (source -> set(destination)) to pairs
- ****************************************************************/
-
-ClosurePairs flatten_closure(const AdjMap &conn) {
-    ClosurePairs pairs;
-    // Rough guess: closure is usually several times bigger than |edges|
-    pairs.reserve(conn.size() * 8);
-
-    for (const auto &entry : conn) {
-        const std::int64_t src = entry.first;
-        const auto &tset = entry.second;
-        for (const auto dst : tset) {
-            pairs.emplace_back(src, dst);
-        }
-    }
-
-    return pairs;
 }
 
 /*****************

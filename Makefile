@@ -20,7 +20,7 @@ OBJS   := $(SRCS:.cu=.o)
 
 all: snomed_tc algorithm_a algorithm_b algorithm_c
 
-snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o
+snomed_tc: snomed_tc.o resulttx.o doubling.o iterative.o serial.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
 algorithm_a: algorithm_a.o resulttx.o doubling.o
@@ -32,11 +32,11 @@ algorithm_b: algorithm_b.o resulttx.o doubling.o iterative.o
 %.o: %.cu
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
 
-algorithm_c: algorithm_c.o
-	$(CPP) -o $@ $^
+%.o: %.cpp
+	$(CPP) $(CPPFLAGS) -c $< -o $@
 
-algorithm_c.o: algorithm_c.cpp
-	$(CPP) -c $< -o $@
+algorithm_c: algorithm_c.o serial.o
+	$(CPP) -o $@ $^
 
 clean:
 	rm -f $(OBJS) $(TARGET)

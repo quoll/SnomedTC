@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef __CUDACC__
 #include <cuda_runtime.h>
+#endif
 
 #include <algorithm>
 #include <chrono>
@@ -79,6 +81,8 @@ struct BitsetMatrixDevice {
     unsigned int* data = nullptr;     // device pointer
 };
 
+#ifdef __CUDACC__
+
 // CUDA error check
 inline void check_cuda(cudaError_t err, const char* msg) {
     if (err != cudaSuccess) {
@@ -134,3 +138,5 @@ inline void free_bitset_matrix_device(BitsetMatrixDevice &m) {
     if (m.data) cudaFree(m.data);
     m.data = nullptr;
 }
+
+#endif // __CUDACC__
