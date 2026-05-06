@@ -34,6 +34,16 @@ algorithm_b: algorithm_b.o resulttx.o iterative.o graph_util.o
 algorithm_c: algorithm_c.o serial.o graph_util.o
 	$(CPP) -o $@ $^
 
+snomed_tc.o:   snomed_tc.cu   common.cuh doubling.cuh iterative.cuh resulttx.cuh serial.h graph_util.h
+algorithm_a.o: algorithm_a.cu common.cuh doubling.cuh resulttx.cuh graph_util.h
+algorithm_b.o: algorithm_b.cu common.cuh iterative.cuh resulttx.cuh graph_util.h
+resulttx.o:    resulttx.cu    common.cuh resulttx.cuh
+doubling.o:    doubling.cu    common.cuh doubling.cuh
+iterative.o:   iterative.cu   common.cuh iterative.cuh
+algorithm_c.o: algorithm_c.cpp common.cuh serial.h graph_util.h
+serial.o:      serial.cpp      common.cuh serial.h
+graph_util.o:  graph_util.cpp  common.cuh graph_util.h
+
 %.o: %.cu
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
 
