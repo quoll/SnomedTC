@@ -25,23 +25,21 @@ All programs make use of features from C++ 20.
 ### snomed_ct
 This program implements algorithms A, B, and C.
 It compares and contrasts the timing and results of each step for each algorithm.
-Due to the size of the program, a truncated form of algorithm A is implemented, where the conversion of the final adjacency matrix
-to source/destination pairs is performed using OpenMP on the host system.
 
-This program requires the Nvidia CUDA compiler, and OpenMP.
+This program requires the Nvidia CUDA compiler.
 
-### doubling
-This program implements the full algorithm A. Final conversion from the adjacency matrix to source/destination pairs is performed on the GPU.
+### algorithm_a
+This program implements the full algorithm A.
 
 This program requires the [Nvidia CUDA compiler](https://developer.nvidia.com/cuda-downloads): NVCC.
 
-### iterative
+### algorithm_b
 This program implements the full algorithm B.
 
 This program requires the [Nvidia CUDA compiler](https://developer.nvidia.com/cuda-downloads): NVCC.
 
-### serial
-This program implements algorithm C.
+### algorithm_c
+This program implements algorithm C. This is similar to algorithm A, but performed serially on a CPU, using a hashmap to hashsets in place of the sparse array.
 
 Only the [GNU C++ compiler](https://gcc.gnu.org/) is required.
 
@@ -52,7 +50,7 @@ make
 ```
 To compile only a single program, name that program in the `make` command. e.g.
 ```bash
-make serial
+make algorithm_c
 ```
 Individual programs should be buildable on systems that cannot compile the other programs.
 For instance, `make serial` should work on MacOS, despite this platform not supporting CUDA.
@@ -67,3 +65,25 @@ To run a program, provide arguments of a SNOMED-CT RelationshipSnapshot file, an
 UMLS Knowledge Sources \[dataset on the Internet\]. Release 2024AA.
 Bethesda (MD): National Library of Medicine (US); 2024 May 6 \[cited 2024 Jul 15\].
 Available from: [http://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html](http://www.nlm.nih.gov/research/umls/licensedcontent/umlsknowledgesources.html)
+
+## File Descriptions
+* `algorithm_a.cu`: `main()` function for the `algorithm_a` program. Depends on `graph_util.h`/`graph_util.cpp`, `doubling.cuh`/`doubling.cu`, and `resulttx.cuh`/`resulttx.cu`.
+* `algorithm_b.cu`: `main()` function for the `algorithm_b` program. Depends on `graph_util.h`/`graph_util.cpp`, `iterative.cuh`/`iterative.cu`, and `resulttx.cuh`/`resulttx.cu`.
+* `algorithm_c.cpp`: `main()` function for the `algorithm_b` program. Depends on `graph_util.h`/`graph_util.cpp`, and `serial.h`/`serial.cpp`.
+* `common.cuh`: header file containing data structures and inline functions for CUDA representation and transfer.
+* `doubling.cu`: implements the steps for algorithm A on CUDA, setting up the graph matrix and joining against itself.
+* `doubling.cuh`: header for the algorithm A operations.
+* `graph_util.cpp`: implements functions for reading SNOMED-CT, and setting up the graph data structures.
+* `graph_util.h`: header for reading SNOMED-CT, and setting up the graph data structures.
+* `iterative.cu`: implements the steps for algorithm B on CUDA, setting up the graph matrix and joining against a CSR representation.
+* `iterative.cuh`: header for the algorithm B operations.
+* `Makefile`: build operations to generate programs. All targets except `algorithm_c` require the `nvcc` compiler from NVIDIA.
+* `relationship-data.zip`: compressed relationship file from SNOMED-CT, International Edition, September 2025.
+* `resulttx.cu`: implements functions for converting a final result into a CSR-style structure on a GPU, transferring to the host, and converting to graph edges.
+* `resulttx.cuh`: header for the result-transfer operations in `resulttx.cu`.
+* `serial.cpp`: implements the steps for the graph self-join algorithm serially on a CPU, using a hashmap/hashset structure for the graph.
+* `serial.h`: header for the `serial.cpp` functions.
+* `snomed_tc.cu`: `main()` function for the `snomed_tc` program. This is a combined form of `algorithm_a`/`algorithm_b`/`algorithm_c`, and compares the results of each for equality.
+
+## License
+MIT License
