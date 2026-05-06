@@ -28,6 +28,9 @@ int main(int argc, char **argv) {
     const std::string output_path = argv[2];
 
     try {
+        // 0. Initialise GPU (not included in algorithm timings)
+        init_gpu();
+
         // 1. Load data
         auto t0 = Clock::now();
         auto edges = load_isA_edges(input_path);
@@ -107,14 +110,9 @@ int main(int argc, char **argv) {
         // final output will be referenced by `in`
         std::cout << "Algorithm A iterations until fixed point: " << iter_countA << "\n";
 
-        // 8. Convert internal closure to pairs, then compute external closure on GPU
+        // 8. Retrieve all closure pairs (internal + external)
         t0 = Clock::now();
-        ClosurePairs internal_pairsA = convert_internal_closure_to_pairs(*in, mapping);
-        ClosurePairs external_pairsA = compute_external_closure_gpu(*in, mapping, external_edges);
-        ClosurePairs closureA_pairs;
-        closureA_pairs.reserve(internal_pairsA.size() + external_pairsA.size());
-        closureA_pairs.insert(closureA_pairs.end(), internal_pairsA.begin(), internal_pairsA.end());
-        closureA_pairs.insert(closureA_pairs.end(), external_pairsA.begin(), external_pairsA.end());
+        ClosurePairs closureA_pairs = retrieve_results(*in, mapping, external_edges);
         t1 = Clock::now();
         auto tA1 = t1;
         std::cout << "Algorithm A convert + external closure: "
@@ -155,12 +153,7 @@ int main(int argc, char **argv) {
         std::cout << "Algorithm B iterations until fixed point: " << iter_countB << "\n";
 
         t0 = Clock::now();
-        ClosurePairs internal_pairsB = convert_internal_closure_to_pairs(closureB_dev, mapping);
-        ClosurePairs external_pairsB = compute_external_closure_gpu(closureB_dev, mapping, external_edges);
-        ClosurePairs closureB_pairs;
-        closureB_pairs.reserve(internal_pairsB.size() + external_pairsB.size());
-        closureB_pairs.insert(closureB_pairs.end(), internal_pairsB.begin(), internal_pairsB.end());
-        closureB_pairs.insert(closureB_pairs.end(), external_pairsB.begin(), external_pairsB.end());
+        ClosurePairs closureB_pairs = retrieve_results(closureB_dev, mapping, external_edges);
         t1 = Clock::now();
         auto tB1 = t1;
         std::cout << "Algorithm B convert + external closure: "

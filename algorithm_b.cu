@@ -15,6 +15,9 @@ int main(int argc, char **argv) {
     const std::string output_path = argv[2];
 
     try {
+        // 0. Initialise GPU (not included in algorithm timings)
+        init_gpu();
+
         // 1. Load data
         auto t0 = Clock::now();
         auto edges = load_isA_edges(input_path);
@@ -92,14 +95,9 @@ int main(int argc, char **argv) {
         }
         std::cout << "Algorithm B iterations until fixed point: " << iter_countB << "\n";
 
-        // 6. Convert internal closure to pairs, then compute external closure on GPU
+        // 6. Retrieve all closure pairs (internal + external)
         t0 = Clock::now();
-        ClosurePairs internal_pairs = convert_internal_closure_to_pairs(closureB_dev, mapping);
-        ClosurePairs external_pairs = compute_external_closure_gpu(closureB_dev, mapping, external_edges);
-        ClosurePairs closureB_pairs;
-        closureB_pairs.reserve(internal_pairs.size() + external_pairs.size());
-        closureB_pairs.insert(closureB_pairs.end(), internal_pairs.begin(), internal_pairs.end());
-        closureB_pairs.insert(closureB_pairs.end(), external_pairs.begin(), external_pairs.end());
+        ClosurePairs closureB_pairs = retrieve_results(closureB_dev, mapping, external_edges);
         t1 = Clock::now();
         auto tB1 = t1;
         std::cout << "Algorithm B convert + external closure: "

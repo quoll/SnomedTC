@@ -215,41 +215,76 @@ __global__ void external_emit_kernel(const int* __restrict__ ext_row_offsets,
     }
 }
 
-// Helper function to call fn(dst_idx) for each set bit in row `row_idx`.
-// Iterates across the row SERIALLY
-template <typename Fn>
-static void for_each_set_bit_in_row(const std::vector<unsigned int> &closure_host,
-                                    int index_size, std::size_t words_per_row,
-                                    int row_idx, Fn &&fn) {
-    const std::size_t row_offset = static_cast<std::size_t>(row_idx) * words_per_row;
-
-    for (int w = 0; w < static_cast<int>(words_per_row); ++w) {
-        unsigned int word = closure_host[row_offset + w];
-        if (word == 0u) continue;
-
-        while (word) {
-            int bit = __builtin_ctz(word);   // position [0..31] of the lowest order bit
-            word &= (word - 1);              // clear that bit
-
-            int dst_idx = w * kBitsPerWord + bit;
-            if (dst_idx >= index_size) {
-                break;  // last partial word can overshoot
-            }
-
-            fn(dst_idx);
-        }
-    }
-}
-
 /***********************************************
  *  Conversion from bitset -> (src,dst) pairs
  ***********************************************/
 
-// retrieves the matrix containing the graph of non-terminal (non-external) edges
-// converts this matrix into source/destination pairs of connected SNOMED codes
-// conversion is SERIAL
-ClosurePairs convert_internal_closure_to_pairs(const BitsetMatrixDevice &closure_dev,
-                                               const DestMapping &mapping) {
+// Counts the number of set bits in each row of the closure matrix.
+// One block per row; threads stride across words and accumulate via shared reduction.
+__global__ void internal_count_kernel(const unsigned int* __restrict__ closure,
+                                      int index_size, int words_per_row,
+                                      unsigned int* __restrict__ counts) {
+    int row = blockIdx.x;
+    if (row >= index_size) return;
+
+    __shared__ unsigned int partial[256];
+
+    unsigned int local = 0u;
+    const std::size_t row_offset = static_cast<std::size_t>(row) * words_per_row;
+
+    for (int w = threadIdx.x; w < words_per_row; w += blockDim.x) {
+        local += __popc(closure[row_offset + w]);
+    }
+
+    partial[threadIdx.x] = local;
+    __syncthreads();
+
+    for (int offset = blockDim.x / 2; offset > 0; offset >>= 1) {
+        if (threadIdx.x < offset) {
+            partial[threadIdx.x] += partial[threadIdx.x + offset];
+        }
+        __syncthreads();
+    }
+
+    if (threadIdx.x == 0) {
+        counts[row] = partial[0];
+    }
+}
+
+// Emits destination SNOMED ids for each row of the closure matrix.
+// One block per row; threads stride across words and emit one id per set bit.
+__global__ void internal_emit_kernel(const unsigned int* __restrict__ closure,
+                                     int index_size, int words_per_row,
+                                     const std::int64_t* __restrict__ index_to_id,
+                                     int* __restrict__ row_cursors,
+                                     std::int64_t* __restrict__ out_dests) {
+    int row = blockIdx.x;
+    if (row >= index_size) return;
+
+    const std::size_t row_offset = static_cast<std::size_t>(row) * words_per_row;
+
+    for (int w = threadIdx.x; w < words_per_row; w += blockDim.x) {
+        unsigned int word = closure[row_offset + w];
+
+        while (word) {
+            int bit = __ffs(word) - 1;
+            word &= (word - 1);
+
+            int dst_idx = w * kBitsPerWord + bit;
+            if (dst_idx >= index_size) continue;
+
+            int pos = atomicAdd(&row_cursors[row], 1);
+            out_dests[pos] = index_to_id[dst_idx];
+        }
+    }
+}
+
+// Converts the internal closure bitset matrix into (src_id, dst_id) pairs on the GPU.
+// count pass -> host prefix sum -> emit pass -> host pairing.
+// mapping_dev must already be uploaded by the caller.
+static ClosurePairs convert_internal_closure_to_pairs(const BitsetMatrixDevice &closure_dev,
+                                                      const DestMapping &mapping,
+                                                      const DestMappingDevice &mapping_dev) {
     ClosurePairs result;
 
     const int index_size = closure_dev.index_size;
@@ -257,26 +292,86 @@ ClosurePairs convert_internal_closure_to_pairs(const BitsetMatrixDevice &closure
         return result;
     }
 
-    const std::size_t words_per_row = closure_dev.words_per_row;
-    const std::size_t num_words     = closure_dev.num_words_total;
+    const int words_per_row = static_cast<int>(closure_dev.words_per_row);
 
-    std::vector<unsigned int> closure_host(num_words);
-    check_cuda(cudaMemcpy(closure_host.data(), closure_dev.data,
-                          num_words * sizeof(unsigned int),
+    // Count set bits per row
+    unsigned int* d_counts = nullptr;
+    check_cuda(cudaMalloc(&d_counts, index_size * sizeof(unsigned int)),
+               "cudaMalloc d_counts (internal)");
+    check_cuda(cudaMemset(d_counts, 0, index_size * sizeof(unsigned int)),
+               "cudaMemset d_counts (internal)");
+
+    dim3 block(256);
+    dim3 grid(index_size);
+
+    internal_count_kernel<<<grid, block>>>(
+        closure_dev.data,
+        index_size,
+        words_per_row,
+        d_counts
+    );
+    check_cuda(cudaDeviceSynchronize(), "internal_count_kernel");
+
+    // Prefix-sum counts on host to get row offsets
+    std::vector<unsigned int> counts_host(index_size);
+    check_cuda(cudaMemcpy(counts_host.data(), d_counts,
+                          index_size * sizeof(unsigned int),
                           cudaMemcpyDeviceToHost),
-               "cudaMemcpy closure_dev -> host");
+               "cudaMemcpy counts_host (internal)");
+    cudaFree(d_counts);
 
-    // Rough heuristic reserve
-    result.reserve(8 * mapping.index_to_id.size());
+    std::vector<int> offsets(index_size + 1);
+    offsets[0] = 0;
+    for (int i = 0; i < index_size; ++i) {
+        offsets[i + 1] = offsets[i] + static_cast<int>(counts_host[i]);
+    }
 
+    const int total_pairs = offsets[index_size];
+    if (total_pairs == 0) {
+        return result;
+    }
+
+    // Allocate output destinations + row cursors on device
+    std::int64_t* d_dests = nullptr;
+    check_cuda(cudaMalloc(&d_dests, total_pairs * sizeof(std::int64_t)),
+               "cudaMalloc d_dests (internal)");
+
+    int* d_row_cursors = nullptr;
+    check_cuda(cudaMalloc(&d_row_cursors, index_size * sizeof(int)),
+               "cudaMalloc d_row_cursors (internal)");
+    check_cuda(cudaMemcpy(d_row_cursors, offsets.data(),
+                          index_size * sizeof(int),
+                          cudaMemcpyHostToDevice),
+               "cudaMemcpy d_row_cursors (internal)");
+
+    // Emit destination ids
+    internal_emit_kernel<<<grid, block>>>(
+        closure_dev.data,
+        index_size,
+        words_per_row,
+        mapping_dev.d_index_to_id,
+        d_row_cursors,
+        d_dests
+    );
+    check_cuda(cudaDeviceSynchronize(), "internal_emit_kernel");
+
+    // Copy destination ids back to host
+    std::vector<std::int64_t> dests_host(total_pairs);
+    check_cuda(cudaMemcpy(dests_host.data(), d_dests,
+                          total_pairs * sizeof(std::int64_t),
+                          cudaMemcpyDeviceToHost),
+               "cudaMemcpy dests_host (internal)");
+    cudaFree(d_dests);
+    cudaFree(d_row_cursors);
+
+    // Pair each source id with its destination ids
+    const std::int64_t* index_to_id = mapping.index_to_id.data();
+    result.reserve(total_pairs);
     for (int src_idx = 0; src_idx < index_size; ++src_idx) {
-        const std::int64_t src_id = mapping.index_to_id[src_idx];
-
-        for_each_set_bit_in_row(closure_host, index_size, words_per_row, src_idx,
-                                [&](int dst_idx) {
-                                    std::int64_t dst_id = mapping.index_to_id[dst_idx];
-                                    result.emplace_back(src_id, dst_id);
-                                });
+        const std::int64_t src_id = index_to_id[src_idx];
+        for (int i = offsets[src_idx]; i < offsets[src_idx + 1]; ++i) {
+            result.emplace_back(src_id, dests_host[i]);
+        }
     }
 
     return result;
@@ -285,16 +380,18 @@ ClosurePairs convert_internal_closure_to_pairs(const BitsetMatrixDevice &closure
 // Connects all of the external (path-terminating) edges to the rest of the graph, on the GPU.
 // Return the result to the host. This means:
 // 1. converting the external edges to CSR form
-// 2. uploading those external edges and the SNOMED-id mapping to the GPU
+// 2. uploading the external CSR to the GPU
 // 3. determining the row sizes needed for the final results
 // 4. finding the locations of the row starts for the output via prefix sum (on host)
 // 5. allocating the destination id array and row cursors on the device
 // 6. emitting destination ids into the output array
 // 7. copying the destination ids back to the host
 // 8. pairing each source id (already on host) with its destination ids
-ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
-                                          const DestMapping &mapping,
-                                          const std::vector<Edge> &external_edges) {
+// mapping_dev must already be uploaded by the caller.
+static ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
+                                                 const DestMapping &mapping,
+                                                 const DestMappingDevice &mapping_dev,
+                                                 const std::vector<Edge> &external_edges) {
     ClosurePairs result;
 
     if (external_edges.empty()) {
@@ -307,9 +404,8 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
         return result;
     }
 
-    // 2. Upload external CSR and mapping to device
+    // 2. Upload external CSR to device
     CSRDevice ext_csr_dev = upload_external_csr_to_device(ext_csr_host);
-    DestMappingDevice mapping_dev = upload_dest_mapping_device(mapping);
 
     const int num_srcs = ext_csr_dev.num_rows;
     const int index_size = closure_dev.index_size;
@@ -353,7 +449,6 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
     const int total_pairs = offsets[num_srcs];
     if (total_pairs == 0) {
         free_csr_device(ext_csr_dev);
-        free_dest_mapping_device(mapping_dev);
         return result;
     }
 
@@ -394,7 +489,6 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
     cudaFree(d_row_cursors);
 
     free_csr_device(ext_csr_dev);
-    free_dest_mapping_device(mapping_dev);
 
     // 8. Pair each source id (from host) with its destination ids
     result.reserve(total_pairs);
@@ -405,5 +499,24 @@ ClosurePairs compute_external_closure_gpu(const BitsetMatrixDevice &closure_dev,
         }
     }
 
+    return result;
+}
+
+// Retrieves all closure pairs (internal + external) for a completed closure matrix.
+// Uploads the index_to_id mapping to the device once, shared by both passes.
+ClosurePairs retrieve_results(const BitsetMatrixDevice &closure_dev,
+                              const DestMapping &mapping,
+                              const std::vector<Edge> &external_edges) {
+    DestMappingDevice mapping_dev = upload_dest_mapping_device(mapping);
+
+    ClosurePairs internal_pairs = convert_internal_closure_to_pairs(closure_dev, mapping, mapping_dev);
+    ClosurePairs external_pairs = compute_external_closure_gpu(closure_dev, mapping, mapping_dev, external_edges);
+
+    free_dest_mapping_device(mapping_dev);
+
+    ClosurePairs result;
+    result.reserve(internal_pairs.size() + external_pairs.size());
+    result.insert(result.end(), internal_pairs.begin(), internal_pairs.end());
+    result.insert(result.end(), external_pairs.begin(), external_pairs.end());
     return result;
 }

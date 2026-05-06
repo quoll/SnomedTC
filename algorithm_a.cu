@@ -16,6 +16,9 @@ int main(int argc, char **argv) {
     const std::string output_path = argv[2];
 
     try {
+        // 0. Initialise GPU (not included in algorithm timings)
+        init_gpu();
+
         // 1. Load data
         auto t0 = Clock::now();
         auto edges = load_isA_edges(input_path);
@@ -95,20 +98,14 @@ int main(int argc, char **argv) {
         // final output will be referenced by `in`
         std::cout << "Algorithm A iterations until fixed point: " << iter_countA << "\n";
 
-        // 8. Convert internal closure to (srcId, dstId) pairs
+        // 8. Retrieve all closure pairs (internal + external)
         t0 = Clock::now();
-        ClosurePairs internal_pairs = convert_internal_closure_to_pairs(*in, mapping);
-
-        // 8a. Compute external closure on the GPU and append
-        ClosurePairs external_pairs_gpu = compute_external_closure_gpu(*in, mapping, external_edges);
-
-        ClosurePairs closureA_pairs;
-        closureA_pairs.reserve(internal_pairs.size() + external_pairs_gpu.size());
-        closureA_pairs.insert(closureA_pairs.end(), internal_pairs.begin(), internal_pairs.end());
-        closureA_pairs.insert(closureA_pairs.end(), external_pairs_gpu.begin(), external_pairs_gpu.end());
+        ClosurePairs closureA_pairs = retrieve_results(*in, mapping, external_edges);
         t1 = Clock::now();
-        std::cout << "Algorithm A closure total pairs (including external): " << closureA_pairs.size() << "\n";
         auto tA1 = t1;
+        std::cout << "Algorithm A convert + external closure: "
+                  << std::chrono::duration<double, std::milli>(tA1 - t0).count() << " ms\n";
+        std::cout << "Algorithm A closure total pairs (including external): " << closureA_pairs.size() << "\n";
         std::cout << "Algorithm A total time: "
                   << (common_time + std::chrono::duration<double, std::milli>(tA1 - tA0).count()) << " ms\n";
 

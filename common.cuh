@@ -84,6 +84,18 @@ struct BitsetMatrixDevice {
 
 #ifdef __CUDACC__
 
+// Warms up the GPU so that driver initialization is not included in algorithm timings.
+inline void init_gpu() {
+    auto t0 = Clock::now();
+    cudaSetDevice(0);
+    cudaFree(0);
+    cudaDeviceSynchronize();
+    auto t1 = Clock::now();
+    std::cout << "GPU initialization: "
+              << std::chrono::duration<double, std::milli>(t1 - t0).count()
+              << " ms\n";
+}
+
 // CUDA error check
 inline void check_cuda(cudaError_t err, const char* msg) {
     if (err != cudaSuccess) {
