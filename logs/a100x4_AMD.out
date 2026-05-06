@@ -1,0 +1,555 @@
+Running SNOMED-CT Transitive Closure
+Node: athena522
+Job ID: 2293388
+CUDA_VISIBLE_DEVICES=0
+
+policy: default
+preferred node: current
+physcpubind: 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 
+cpubind: 0 1 
+nodebind: 0 1 
+membind: 0 1 2 3 4 5 6 7 
+preferred: 
+	[4mGPU0	NIC0	NIC1	NIC2	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
+GPU0	 X 	SYS	SYS	SYS	16-17	1		N/A
+NIC0	SYS	 X 	SYS	SYS				
+NIC1	SYS	SYS	 X 	SYS				
+NIC2	SYS	SYS	SYS	 X 				
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+
+NIC Legend:
+
+  NIC0: mlx5_0
+  NIC1: mlx5_1
+  NIC2: mlx5_2
+
+
+===== iteration 1 / 10 on athena522 =====
+GPU initialization: 416.042 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2923.66 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 10.7167 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 27.4468 ms
+Step upload_csr_to_device: 0.557334 ms
+Algorithm A initial fill: 0.657854 ms
+Algorithm A iteration 1 took 12.0212 ms, changed=true
+Algorithm A iteration 2 took 10.7221 ms, changed=true
+Algorithm A iteration 3 took 15.3493 ms, changed=true
+Algorithm A iteration 4 took 19.4756 ms, changed=true
+Algorithm A iteration 5 took 19.8858 ms, changed=true
+Algorithm A iteration 6 took 19.8873 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 121.143 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 251.086 ms
+Step allocate_bitset_matrix_device (B): 0.584505 ms
+Algorithm B initial fill: 1.22982 ms, changed=true
+Algorithm B iteration 1 took 5.85552 ms, changed=true
+Algorithm B iteration 2 took 5.77846 ms, changed=true
+Algorithm B iteration 3 took 5.65386 ms, changed=true
+Algorithm B iteration 4 took 5.58595 ms, changed=true
+Algorithm B iteration 5 took 5.55032 ms, changed=true
+Algorithm B iteration 6 took 5.53918 ms, changed=true
+Algorithm B iteration 7 took 5.53009 ms, changed=true
+Algorithm B iteration 8 took 5.53328 ms, changed=true
+Algorithm B iteration 9 took 5.52948 ms, changed=true
+Algorithm B iteration 10 took 5.52941 ms, changed=true
+Algorithm B iteration 11 took 5.53 ms, changed=true
+Algorithm B iteration 12 took 5.53208 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 116.073 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 213.062 ms
+Algorithm C build_adjacency_from_edges: 126.063 ms
+Algorithm C compute_transitive_closure_serial: 10877.4 ms
+Algorithm C flatten_closure to pairs: 301.161 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11304.9 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 707.399 ms
+
+===== iteration 2 / 10 on athena522 =====
+GPU initialization: 335.974 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2905.13 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.93 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 30.1234 ms
+Step upload_csr_to_device: 0.626625 ms
+Algorithm A initial fill: 0.693671 ms
+Algorithm A iteration 1 took 13.2209 ms, changed=true
+Algorithm A iteration 2 took 10.7235 ms, changed=true
+Algorithm A iteration 3 took 15.3422 ms, changed=true
+Algorithm A iteration 4 took 19.4796 ms, changed=true
+Algorithm A iteration 5 took 19.9074 ms, changed=true
+Algorithm A iteration 6 took 19.9058 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 120.236 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 254.514 ms
+Step allocate_bitset_matrix_device (B): 0.594344 ms
+Algorithm B initial fill: 1.24383 ms, changed=true
+Algorithm B iteration 1 took 5.85958 ms, changed=true
+Algorithm B iteration 2 took 5.76514 ms, changed=true
+Algorithm B iteration 3 took 5.64783 ms, changed=true
+Algorithm B iteration 4 took 5.58094 ms, changed=true
+Algorithm B iteration 5 took 5.55016 ms, changed=true
+Algorithm B iteration 6 took 5.53735 ms, changed=true
+Algorithm B iteration 7 took 5.53886 ms, changed=true
+Algorithm B iteration 8 took 5.53121 ms, changed=true
+Algorithm B iteration 9 took 5.53169 ms, changed=true
+Algorithm B iteration 10 took 5.52864 ms, changed=true
+Algorithm B iteration 11 took 5.52833 ms, changed=true
+Algorithm B iteration 12 took 5.53026 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 119.604 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 219.346 ms
+Algorithm C build_adjacency_from_edges: 129.314 ms
+Algorithm C compute_transitive_closure_serial: 11211.3 ms
+Algorithm C flatten_closure to pairs: 305.185 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11646.2 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 702.157 ms
+
+===== iteration 3 / 10 on athena522 =====
+GPU initialization: 338.707 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2896.61 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.6127 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 29.1808 ms
+Step upload_csr_to_device: 0.569336 ms
+Algorithm A initial fill: 0.681568 ms
+Algorithm A iteration 1 took 12.8208 ms, changed=true
+Algorithm A iteration 2 took 10.7261 ms, changed=true
+Algorithm A iteration 3 took 15.3462 ms, changed=true
+Algorithm A iteration 4 took 19.4675 ms, changed=true
+Algorithm A iteration 5 took 19.8846 ms, changed=true
+Algorithm A iteration 6 took 19.8961 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 116.856 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 249.669 ms
+Step allocate_bitset_matrix_device (B): 0.584225 ms
+Algorithm B initial fill: 1.23365 ms, changed=true
+Algorithm B iteration 1 took 5.86033 ms, changed=true
+Algorithm B iteration 2 took 5.76683 ms, changed=true
+Algorithm B iteration 3 took 5.65099 ms, changed=true
+Algorithm B iteration 4 took 5.5807 ms, changed=true
+Algorithm B iteration 5 took 5.55021 ms, changed=true
+Algorithm B iteration 6 took 5.53798 ms, changed=true
+Algorithm B iteration 7 took 5.53432 ms, changed=true
+Algorithm B iteration 8 took 5.5319 ms, changed=true
+Algorithm B iteration 9 took 5.53362 ms, changed=true
+Algorithm B iteration 10 took 5.5303 ms, changed=true
+Algorithm B iteration 11 took 5.53144 ms, changed=true
+Algorithm B iteration 12 took 5.53045 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 112.925 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 211.656 ms
+Algorithm C build_adjacency_from_edges: 125.664 ms
+Algorithm C compute_transitive_closure_serial: 10883.6 ms
+Algorithm C flatten_closure to pairs: 300.544 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11310.2 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 703.428 ms
+
+===== iteration 4 / 10 on athena522 =====
+GPU initialization: 316.847 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2907.3 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.9176 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 29.6813 ms
+Step upload_csr_to_device: 0.596237 ms
+Algorithm A initial fill: 0.649899 ms
+Algorithm A iteration 1 took 12.4857 ms, changed=true
+Algorithm A iteration 2 took 10.7191 ms, changed=true
+Algorithm A iteration 3 took 15.3519 ms, changed=true
+Algorithm A iteration 4 took 19.4814 ms, changed=true
+Algorithm A iteration 5 took 19.8981 ms, changed=true
+Algorithm A iteration 6 took 19.8933 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 122.056 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 254.929 ms
+Step allocate_bitset_matrix_device (B): 0.589234 ms
+Algorithm B initial fill: 1.24097 ms, changed=true
+Algorithm B iteration 1 took 5.85822 ms, changed=true
+Algorithm B iteration 2 took 5.76312 ms, changed=true
+Algorithm B iteration 3 took 5.64714 ms, changed=true
+Algorithm B iteration 4 took 5.58174 ms, changed=true
+Algorithm B iteration 5 took 5.54991 ms, changed=true
+Algorithm B iteration 6 took 5.53803 ms, changed=true
+Algorithm B iteration 7 took 5.533 ms, changed=true
+Algorithm B iteration 8 took 5.53118 ms, changed=true
+Algorithm B iteration 9 took 5.53012 ms, changed=true
+Algorithm B iteration 10 took 5.53029 ms, changed=true
+Algorithm B iteration 11 took 5.53149 ms, changed=true
+Algorithm B iteration 12 took 5.52911 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 117.867 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 217.122 ms
+Algorithm C build_adjacency_from_edges: 131.242 ms
+Algorithm C compute_transitive_closure_serial: 10989.7 ms
+Algorithm C flatten_closure to pairs: 296.821 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11418.1 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 704.216 ms
+
+===== iteration 5 / 10 on athena522 =====
+GPU initialization: 342.078 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2876.73 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.3888 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 28.9229 ms
+Step upload_csr_to_device: 0.553677 ms
+Algorithm A initial fill: 0.669916 ms
+Algorithm A iteration 1 took 12.7757 ms, changed=true
+Algorithm A iteration 2 took 10.7182 ms, changed=true
+Algorithm A iteration 3 took 15.3507 ms, changed=true
+Algorithm A iteration 4 took 19.4756 ms, changed=true
+Algorithm A iteration 5 took 19.8931 ms, changed=true
+Algorithm A iteration 6 took 19.9076 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 122.233 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 254.654 ms
+Step allocate_bitset_matrix_device (B): 0.604132 ms
+Algorithm B initial fill: 1.23833 ms, changed=true
+Algorithm B iteration 1 took 6.1458 ms, changed=true
+Algorithm B iteration 2 took 6.04403 ms, changed=true
+Algorithm B iteration 3 took 5.92724 ms, changed=true
+Algorithm B iteration 4 took 5.85846 ms, changed=true
+Algorithm B iteration 5 took 5.6843 ms, changed=true
+Algorithm B iteration 6 took 5.53915 ms, changed=true
+Algorithm B iteration 7 took 5.53235 ms, changed=true
+Algorithm B iteration 8 took 5.532 ms, changed=true
+Algorithm B iteration 9 took 5.5292 ms, changed=true
+Algorithm B iteration 10 took 5.52897 ms, changed=true
+Algorithm B iteration 11 took 5.52689 ms, changed=true
+Algorithm B iteration 12 took 5.53001 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 116.935 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 216.653 ms
+Algorithm C build_adjacency_from_edges: 130.233 ms
+Algorithm C compute_transitive_closure_serial: 10915 ms
+Algorithm C flatten_closure to pairs: 298.698 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11344.3 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 705.292 ms
+
+===== iteration 6 / 10 on athena522 =====
+GPU initialization: 340.544 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2953.3 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.541 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 28.7768 ms
+Step upload_csr_to_device: 0.560099 ms
+Algorithm A initial fill: 0.675607 ms
+Algorithm A iteration 1 took 12.5469 ms, changed=true
+Algorithm A iteration 2 took 10.7171 ms, changed=true
+Algorithm A iteration 3 took 15.3494 ms, changed=true
+Algorithm A iteration 4 took 19.4812 ms, changed=true
+Algorithm A iteration 5 took 19.8934 ms, changed=true
+Algorithm A iteration 6 took 19.9 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 119.147 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 251.135 ms
+Step allocate_bitset_matrix_device (B): 0.574406 ms
+Algorithm B initial fill: 1.28529 ms, changed=true
+Algorithm B iteration 1 took 5.85854 ms, changed=true
+Algorithm B iteration 2 took 5.76659 ms, changed=true
+Algorithm B iteration 3 took 5.64871 ms, changed=true
+Algorithm B iteration 4 took 5.58198 ms, changed=true
+Algorithm B iteration 5 took 5.55187 ms, changed=true
+Algorithm B iteration 6 took 5.5378 ms, changed=true
+Algorithm B iteration 7 took 5.53178 ms, changed=true
+Algorithm B iteration 8 took 5.53305 ms, changed=true
+Algorithm B iteration 9 took 5.53198 ms, changed=true
+Algorithm B iteration 10 took 5.5311 ms, changed=true
+Algorithm B iteration 11 took 5.53038 ms, changed=true
+Algorithm B iteration 12 took 5.52978 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 114.777 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 213.132 ms
+Algorithm C build_adjacency_from_edges: 130.529 ms
+Algorithm C compute_transitive_closure_serial: 11139.7 ms
+Algorithm C flatten_closure to pairs: 298.724 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11569.4 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 704.219 ms
+
+===== iteration 7 / 10 on athena522 =====
+GPU initialization: 331.182 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2959.95 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.1422 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 27.2467 ms
+Step upload_csr_to_device: 0.57665 ms
+Algorithm A initial fill: 0.699993 ms
+Algorithm A iteration 1 took 12.1866 ms, changed=true
+Algorithm A iteration 2 took 10.7243 ms, changed=true
+Algorithm A iteration 3 took 15.344 ms, changed=true
+Algorithm A iteration 4 took 19.4713 ms, changed=true
+Algorithm A iteration 5 took 19.9136 ms, changed=true
+Algorithm A iteration 6 took 19.9024 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 119.088 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 249.172 ms
+Step allocate_bitset_matrix_device (B): 0.607078 ms
+Algorithm B initial fill: 1.24117 ms, changed=true
+Algorithm B iteration 1 took 5.85663 ms, changed=true
+Algorithm B iteration 2 took 5.763 ms, changed=true
+Algorithm B iteration 3 took 5.64775 ms, changed=true
+Algorithm B iteration 4 took 5.58177 ms, changed=true
+Algorithm B iteration 5 took 5.54947 ms, changed=true
+Algorithm B iteration 6 took 5.5376 ms, changed=true
+Algorithm B iteration 7 took 5.53245 ms, changed=true
+Algorithm B iteration 8 took 5.53091 ms, changed=true
+Algorithm B iteration 9 took 5.52803 ms, changed=true
+Algorithm B iteration 10 took 5.52908 ms, changed=true
+Algorithm B iteration 11 took 5.53034 ms, changed=true
+Algorithm B iteration 12 took 5.53101 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 114.542 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 211.354 ms
+Algorithm C build_adjacency_from_edges: 124.857 ms
+Algorithm C compute_transitive_closure_serial: 10914.6 ms
+Algorithm C flatten_closure to pairs: 297.687 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11337.4 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 702.339 ms
+
+===== iteration 8 / 10 on athena522 =====
+GPU initialization: 336.751 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2899.75 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 10.9549 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 28.1669 ms
+Step upload_csr_to_device: 0.572272 ms
+Algorithm A initial fill: 0.673193 ms
+Algorithm A iteration 1 took 12.5991 ms, changed=true
+Algorithm A iteration 2 took 10.7148 ms, changed=true
+Algorithm A iteration 3 took 15.3517 ms, changed=true
+Algorithm A iteration 4 took 19.4706 ms, changed=true
+Algorithm A iteration 5 took 19.8995 ms, changed=true
+Algorithm A iteration 6 took 19.9159 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 123.799 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 255.437 ms
+Step allocate_bitset_matrix_device (B): 0.583382 ms
+Algorithm B initial fill: 1.23389 ms, changed=true
+Algorithm B iteration 1 took 5.86346 ms, changed=true
+Algorithm B iteration 2 took 5.76387 ms, changed=true
+Algorithm B iteration 3 took 5.6507 ms, changed=true
+Algorithm B iteration 4 took 5.58087 ms, changed=true
+Algorithm B iteration 5 took 5.54972 ms, changed=true
+Algorithm B iteration 6 took 5.53528 ms, changed=true
+Algorithm B iteration 7 took 5.53257 ms, changed=true
+Algorithm B iteration 8 took 5.52775 ms, changed=true
+Algorithm B iteration 9 took 5.52875 ms, changed=true
+Algorithm B iteration 10 took 5.52864 ms, changed=true
+Algorithm B iteration 11 took 5.52885 ms, changed=true
+Algorithm B iteration 12 took 5.52702 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 117.099 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 214.796 ms
+Algorithm C build_adjacency_from_edges: 127.728 ms
+Algorithm C compute_transitive_closure_serial: 10758.8 ms
+Algorithm C flatten_closure to pairs: 297.387 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11184.3 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 702.338 ms
+
+===== iteration 9 / 10 on athena522 =====
+GPU initialization: 330.222 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2901.27 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.4527 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 28.5891 ms
+Step upload_csr_to_device: 0.617608 ms
+Algorithm A initial fill: 0.686558 ms
+Algorithm A iteration 1 took 12.2098 ms, changed=true
+Algorithm A iteration 2 took 10.7191 ms, changed=true
+Algorithm A iteration 3 took 15.348 ms, changed=true
+Algorithm A iteration 4 took 19.4711 ms, changed=true
+Algorithm A iteration 5 took 19.8941 ms, changed=true
+Algorithm A iteration 6 took 19.9108 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 119.255 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 250.751 ms
+Step allocate_bitset_matrix_device (B): 0.600555 ms
+Algorithm B initial fill: 1.2416 ms, changed=true
+Algorithm B iteration 1 took 6.14024 ms, changed=true
+Algorithm B iteration 2 took 6.04475 ms, changed=true
+Algorithm B iteration 3 took 5.92708 ms, changed=true
+Algorithm B iteration 4 took 5.86047 ms, changed=true
+Algorithm B iteration 5 took 5.83114 ms, changed=true
+Algorithm B iteration 6 took 5.81723 ms, changed=true
+Algorithm B iteration 7 took 5.81122 ms, changed=true
+Algorithm B iteration 8 took 5.81271 ms, changed=true
+Algorithm B iteration 9 took 5.74925 ms, changed=true
+Algorithm B iteration 10 took 5.52939 ms, changed=true
+Algorithm B iteration 11 took 5.53059 ms, changed=true
+Algorithm B iteration 12 took 5.53218 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 116.095 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 216.755 ms
+Algorithm C build_adjacency_from_edges: 126.779 ms
+Algorithm C compute_transitive_closure_serial: 11131.4 ms
+Algorithm C flatten_closure to pairs: 299.64 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11557.8 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 704.822 ms
+
+===== iteration 10 / 10 on athena522 =====
+GPU initialization: 324.497 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2899.12 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 10.4717 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 27.1699 ms
+Step upload_csr_to_device: 0.557454 ms
+Algorithm A initial fill: 0.691837 ms
+Algorithm A iteration 1 took 12.1005 ms, changed=true
+Algorithm A iteration 2 took 10.7189 ms, changed=true
+Algorithm A iteration 3 took 15.3583 ms, changed=true
+Algorithm A iteration 4 took 19.4761 ms, changed=true
+Algorithm A iteration 5 took 19.8925 ms, changed=true
+Algorithm A iteration 6 took 19.8913 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 118.42 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 248.22 ms
+Step allocate_bitset_matrix_device (B): 0.600736 ms
+Algorithm B initial fill: 1.23041 ms, changed=true
+Algorithm B iteration 1 took 5.85706 ms, changed=true
+Algorithm B iteration 2 took 5.76435 ms, changed=true
+Algorithm B iteration 3 took 5.64977 ms, changed=true
+Algorithm B iteration 4 took 5.57887 ms, changed=true
+Algorithm B iteration 5 took 5.55259 ms, changed=true
+Algorithm B iteration 6 took 5.53876 ms, changed=true
+Algorithm B iteration 7 took 5.53045 ms, changed=true
+Algorithm B iteration 8 took 5.53164 ms, changed=true
+Algorithm B iteration 9 took 5.53085 ms, changed=true
+Algorithm B iteration 10 took 5.53034 ms, changed=true
+Algorithm B iteration 11 took 5.53063 ms, changed=true
+Algorithm B iteration 12 took 5.53171 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 113.155 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 209.863 ms
+Algorithm C build_adjacency_from_edges: 124.332 ms
+Algorithm C compute_transitive_closure_serial: 11263.1 ms
+Algorithm C flatten_closure to pairs: 300.073 ms
+Algorithm C map-of-sets closure size: 7543811
+Algorithm C total time: 11687.8 ms
+Algorithm A vs B results equal? YES
+Algorithm A vs C results equal? YES
+Writing output file: 704.294 ms
+
