@@ -1,6 +1,6 @@
 Running SNOMED-CT Transitive Closure
 Node: athena522
-Job ID: 2293388
+Job ID: 2295893
 CUDA_VISIBLE_DEVICES=0
 
 policy: default
@@ -11,7 +11,7 @@ nodebind: 0 1
 membind: 0 1 2 3 4 5 6 7 
 preferred: 
 	[4mGPU0	NIC0	NIC1	NIC2	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
-GPU0	 X 	SYS	SYS	SYS	16-17	1		N/A
+GPU0	 X 	SYS	SYS	SYS		5		N/A
 NIC0	SYS	 X 	SYS	SYS				
 NIC1	SYS	SYS	 X 	SYS				
 NIC2	SYS	SYS	SYS	 X 				
@@ -34,522 +34,882 @@ NIC Legend:
 
 
 ===== iteration 1 / 10 on athena522 =====
-GPU initialization: 416.042 ms
+GPU initialization: 426.306 ms
 Total data rows (excluding header): 3528487
 Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2923.66 ms
+Step load_isA_edges: 3003.86 ms
 Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 10.7167 ms
+Step build_dest_mapping: 11.8596 ms
 CSR graph over T:
   num_rows (|T|)        : 131884
   Internal edges (src∈T): 239064
   External edges (src∉T): 383343
   External edge records : 383343
-Step build_csr_internal: 27.4468 ms
-Step upload_csr_to_device: 0.557334 ms
-Algorithm A initial fill: 0.657854 ms
-Algorithm A iteration 1 took 12.0212 ms, changed=true
-Algorithm A iteration 2 took 10.7221 ms, changed=true
-Algorithm A iteration 3 took 15.3493 ms, changed=true
-Algorithm A iteration 4 took 19.4756 ms, changed=true
-Algorithm A iteration 5 took 19.8858 ms, changed=true
-Algorithm A iteration 6 took 19.8873 ms, changed=false
+Step build_csr_internal: 29.7184 ms
+Step upload_csr_to_device: 3.01403 ms
+Algorithm A initial fill: 1.4124 ms
+Algorithm A iteration 1 took 12.2107 ms, changed=true
+Algorithm A iteration 2 took 10.718 ms, changed=true
+Algorithm A iteration 3 took 15.3597 ms, changed=true
+Algorithm A iteration 4 took 19.4745 ms, changed=true
+Algorithm A iteration 5 took 19.9015 ms, changed=true
+Algorithm A iteration 6 took 19.8997 ms, changed=false
 Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 121.143 ms
+Algorithm A convert + external closure: 126.988 ms
 Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 251.086 ms
-Step allocate_bitset_matrix_device (B): 0.584505 ms
-Algorithm B initial fill: 1.22982 ms, changed=true
-Algorithm B iteration 1 took 5.85552 ms, changed=true
-Algorithm B iteration 2 took 5.77846 ms, changed=true
-Algorithm B iteration 3 took 5.65386 ms, changed=true
-Algorithm B iteration 4 took 5.58595 ms, changed=true
-Algorithm B iteration 5 took 5.55032 ms, changed=true
-Algorithm B iteration 6 took 5.53918 ms, changed=true
-Algorithm B iteration 7 took 5.53009 ms, changed=true
-Algorithm B iteration 8 took 5.53328 ms, changed=true
-Algorithm B iteration 9 took 5.52948 ms, changed=true
-Algorithm B iteration 10 took 5.52941 ms, changed=true
-Algorithm B iteration 11 took 5.53 ms, changed=true
-Algorithm B iteration 12 took 5.53208 ms, changed=false
+Algorithm A total time: 265.197 ms
+Step allocate_bitset_matrix_device (B): 0.643467 ms
+Algorithm B initial fill: 3.44334 ms, changed=true
+Algorithm B iteration 1 took 5.85893 ms, changed=true
+Algorithm B iteration 2 took 5.76333 ms, changed=true
+Algorithm B iteration 3 took 5.65803 ms, changed=true
+Algorithm B iteration 4 took 5.58333 ms, changed=true
+Algorithm B iteration 5 took 5.55123 ms, changed=true
+Algorithm B iteration 6 took 5.53809 ms, changed=true
+Algorithm B iteration 7 took 5.53182 ms, changed=true
+Algorithm B iteration 8 took 5.53121 ms, changed=true
+Algorithm B iteration 9 took 5.53043 ms, changed=true
+Algorithm B iteration 10 took 5.53097 ms, changed=true
+Algorithm B iteration 11 took 5.53264 ms, changed=true
+Algorithm B iteration 12 took 5.53069 ms, changed=false
 Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 116.073 ms
+Algorithm B convert + external closure: 122.261 ms
 Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 213.062 ms
-Algorithm C build_adjacency_from_edges: 126.063 ms
-Algorithm C compute_transitive_closure_serial: 10877.4 ms
-Algorithm C flatten_closure to pairs: 301.161 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11304.9 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 707.399 ms
+Algorithm B total time: 226.25 ms
+Algorithm A-serial build_adjacency_from_edges: 129.38 ms
+Algorithm A-serial iteration 1 took 220.856 ms, changed=true
+Algorithm A-serial iteration 2 took 553.655 ms, changed=true
+Algorithm A-serial iteration 3 took 1442.5 ms, changed=true
+Algorithm A-serial iteration 4 took 1895.56 ms, changed=true
+Algorithm A-serial iteration 5 took 1618.24 ms, changed=true
+Algorithm A-serial iteration 6 took 1541.68 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8365.22 ms
+Algorithm A-serial flatten_closure to pairs: 52.7217 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8547.33 ms
+Algorithm B-serial build_adjacency_from_edges: 103.834 ms
+Algorithm B-serial iteration 1 took 443.393 ms, changed=true
+Algorithm B-serial iteration 2 took 612.482 ms, changed=true
+Algorithm B-serial iteration 3 took 668.58 ms, changed=true
+Algorithm B-serial iteration 4 took 671.621 ms, changed=true
+Algorithm B-serial iteration 5 took 587.093 ms, changed=true
+Algorithm B-serial iteration 6 took 426.184 ms, changed=true
+Algorithm B-serial iteration 7 took 269.14 ms, changed=true
+Algorithm B-serial iteration 8 took 152.586 ms, changed=true
+Algorithm B-serial iteration 9 took 90.2302 ms, changed=true
+Algorithm B-serial iteration 10 took 46.6872 ms, changed=true
+Algorithm B-serial iteration 11 took 21.6698 ms, changed=true
+Algorithm B-serial iteration 12 took 9.16456 ms, changed=true
+Algorithm B-serial iteration 13 took 6.12033 ms, changed=true
+Algorithm B-serial iteration 14 took 3.22168 ms, changed=true
+Algorithm B-serial iteration 15 took 1.52851 ms, changed=true
+Algorithm B-serial iteration 16 took 1.92756 ms, changed=true
+Algorithm B-serial iteration 17 took 0.563625 ms, changed=true
+Algorithm B-serial iteration 18 took 0.083378 ms, changed=true
+Algorithm B-serial iteration 19 took 0.01078 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002274 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000401 ms, changed=true
+Algorithm B-serial iteration 22 took 8.1e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4902.67 ms
+Algorithm B-serial flatten_closure to pairs: 379.227 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5385.76 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 705.147 ms
 
 ===== iteration 2 / 10 on athena522 =====
-GPU initialization: 335.974 ms
+GPU initialization: 349.577 ms
 Total data rows (excluding header): 3528487
 Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2905.13 ms
+Step load_isA_edges: 3015.76 ms
 Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.93 ms
+Step build_dest_mapping: 14.645 ms
 CSR graph over T:
   num_rows (|T|)        : 131884
   Internal edges (src∈T): 239064
   External edges (src∉T): 383343
   External edge records : 383343
-Step build_csr_internal: 30.1234 ms
-Step upload_csr_to_device: 0.626625 ms
-Algorithm A initial fill: 0.693671 ms
-Algorithm A iteration 1 took 13.2209 ms, changed=true
-Algorithm A iteration 2 took 10.7235 ms, changed=true
-Algorithm A iteration 3 took 15.3422 ms, changed=true
-Algorithm A iteration 4 took 19.4796 ms, changed=true
-Algorithm A iteration 5 took 19.9074 ms, changed=true
-Algorithm A iteration 6 took 19.9058 ms, changed=false
+Step build_csr_internal: 34.0907 ms
+Step upload_csr_to_device: 2.98103 ms
+Algorithm A initial fill: 1.41576 ms
+Algorithm A iteration 1 took 12.3332 ms, changed=true
+Algorithm A iteration 2 took 10.7181 ms, changed=true
+Algorithm A iteration 3 took 15.3462 ms, changed=true
+Algorithm A iteration 4 took 19.4747 ms, changed=true
+Algorithm A iteration 5 took 19.9001 ms, changed=true
+Algorithm A iteration 6 took 19.8993 ms, changed=false
 Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 120.236 ms
+Algorithm A convert + external closure: 128.275 ms
 Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 254.514 ms
-Step allocate_bitset_matrix_device (B): 0.594344 ms
-Algorithm B initial fill: 1.24383 ms, changed=true
-Algorithm B iteration 1 took 5.85958 ms, changed=true
-Algorithm B iteration 2 took 5.76514 ms, changed=true
-Algorithm B iteration 3 took 5.64783 ms, changed=true
-Algorithm B iteration 4 took 5.58094 ms, changed=true
-Algorithm B iteration 5 took 5.55016 ms, changed=true
-Algorithm B iteration 6 took 5.53735 ms, changed=true
-Algorithm B iteration 7 took 5.53886 ms, changed=true
-Algorithm B iteration 8 took 5.53121 ms, changed=true
-Algorithm B iteration 9 took 5.53169 ms, changed=true
-Algorithm B iteration 10 took 5.52864 ms, changed=true
-Algorithm B iteration 11 took 5.52833 ms, changed=true
-Algorithm B iteration 12 took 5.53026 ms, changed=false
+Algorithm A total time: 270.292 ms
+Step allocate_bitset_matrix_device (B): 0.606667 ms
+Algorithm B initial fill: 1.66105 ms, changed=true
+Algorithm B iteration 1 took 5.85788 ms, changed=true
+Algorithm B iteration 2 took 5.7643 ms, changed=true
+Algorithm B iteration 3 took 5.64843 ms, changed=true
+Algorithm B iteration 4 took 5.58196 ms, changed=true
+Algorithm B iteration 5 took 5.55184 ms, changed=true
+Algorithm B iteration 6 took 5.53779 ms, changed=true
+Algorithm B iteration 7 took 5.53432 ms, changed=true
+Algorithm B iteration 8 took 5.52951 ms, changed=true
+Algorithm B iteration 9 took 5.53529 ms, changed=true
+Algorithm B iteration 10 took 5.53407 ms, changed=true
+Algorithm B iteration 11 took 5.52958 ms, changed=true
+Algorithm B iteration 12 took 5.53068 ms, changed=false
 Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 119.604 ms
+Algorithm B convert + external closure: 122.367 ms
 Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 219.346 ms
-Algorithm C build_adjacency_from_edges: 129.314 ms
-Algorithm C compute_transitive_closure_serial: 11211.3 ms
-Algorithm C flatten_closure to pairs: 305.185 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11646.2 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 702.157 ms
+Algorithm B total time: 228.866 ms
+Algorithm A-serial build_adjacency_from_edges: 128.873 ms
+Algorithm A-serial iteration 1 took 226.713 ms, changed=true
+Algorithm A-serial iteration 2 took 555.42 ms, changed=true
+Algorithm A-serial iteration 3 took 1434.8 ms, changed=true
+Algorithm A-serial iteration 4 took 1881.63 ms, changed=true
+Algorithm A-serial iteration 5 took 1608 ms, changed=true
+Algorithm A-serial iteration 6 took 1544.4 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8342.52 ms
+Algorithm A-serial flatten_closure to pairs: 53.1278 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8524.53 ms
+Algorithm B-serial build_adjacency_from_edges: 113.219 ms
+Algorithm B-serial iteration 1 took 446.135 ms, changed=true
+Algorithm B-serial iteration 2 took 613.848 ms, changed=true
+Algorithm B-serial iteration 3 took 683.815 ms, changed=true
+Algorithm B-serial iteration 4 took 671.288 ms, changed=true
+Algorithm B-serial iteration 5 took 588.288 ms, changed=true
+Algorithm B-serial iteration 6 took 434.064 ms, changed=true
+Algorithm B-serial iteration 7 took 270.496 ms, changed=true
+Algorithm B-serial iteration 8 took 162.745 ms, changed=true
+Algorithm B-serial iteration 9 took 92.1547 ms, changed=true
+Algorithm B-serial iteration 10 took 46.7917 ms, changed=true
+Algorithm B-serial iteration 11 took 21.4309 ms, changed=true
+Algorithm B-serial iteration 12 took 9.21814 ms, changed=true
+Algorithm B-serial iteration 13 took 6.10555 ms, changed=true
+Algorithm B-serial iteration 14 took 3.23083 ms, changed=true
+Algorithm B-serial iteration 15 took 1.53865 ms, changed=true
+Algorithm B-serial iteration 16 took 1.93088 ms, changed=true
+Algorithm B-serial iteration 17 took 0.56084 ms, changed=true
+Algorithm B-serial iteration 18 took 0.07948 ms, changed=true
+Algorithm B-serial iteration 19 took 0.010139 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002464 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000431 ms, changed=true
+Algorithm B-serial iteration 22 took 0.0001 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4939.03 ms
+Algorithm B-serial flatten_closure to pairs: 376.578 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5428.87 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.726 ms
 
 ===== iteration 3 / 10 on athena522 =====
-GPU initialization: 338.707 ms
+GPU initialization: 348.758 ms
 Total data rows (excluding header): 3528487
 Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2896.61 ms
+Step load_isA_edges: 3437.5 ms
 Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.6127 ms
+Step build_dest_mapping: 11.9745 ms
 CSR graph over T:
   num_rows (|T|)        : 131884
   Internal edges (src∈T): 239064
   External edges (src∉T): 383343
   External edge records : 383343
-Step build_csr_internal: 29.1808 ms
-Step upload_csr_to_device: 0.569336 ms
-Algorithm A initial fill: 0.681568 ms
-Algorithm A iteration 1 took 12.8208 ms, changed=true
-Algorithm A iteration 2 took 10.7261 ms, changed=true
-Algorithm A iteration 3 took 15.3462 ms, changed=true
-Algorithm A iteration 4 took 19.4675 ms, changed=true
-Algorithm A iteration 5 took 19.8846 ms, changed=true
-Algorithm A iteration 6 took 19.8961 ms, changed=false
-Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 116.856 ms
-Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 249.669 ms
-Step allocate_bitset_matrix_device (B): 0.584225 ms
-Algorithm B initial fill: 1.23365 ms, changed=true
-Algorithm B iteration 1 took 5.86033 ms, changed=true
-Algorithm B iteration 2 took 5.76683 ms, changed=true
-Algorithm B iteration 3 took 5.65099 ms, changed=true
-Algorithm B iteration 4 took 5.5807 ms, changed=true
-Algorithm B iteration 5 took 5.55021 ms, changed=true
-Algorithm B iteration 6 took 5.53798 ms, changed=true
-Algorithm B iteration 7 took 5.53432 ms, changed=true
-Algorithm B iteration 8 took 5.5319 ms, changed=true
-Algorithm B iteration 9 took 5.53362 ms, changed=true
-Algorithm B iteration 10 took 5.5303 ms, changed=true
-Algorithm B iteration 11 took 5.53144 ms, changed=true
-Algorithm B iteration 12 took 5.53045 ms, changed=false
-Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 112.925 ms
-Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 211.656 ms
-Algorithm C build_adjacency_from_edges: 125.664 ms
-Algorithm C compute_transitive_closure_serial: 10883.6 ms
-Algorithm C flatten_closure to pairs: 300.544 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11310.2 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 703.428 ms
-
-===== iteration 4 / 10 on athena522 =====
-GPU initialization: 316.847 ms
-Total data rows (excluding header): 3528487
-Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2907.3 ms
-Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.9176 ms
-CSR graph over T:
-  num_rows (|T|)        : 131884
-  Internal edges (src∈T): 239064
-  External edges (src∉T): 383343
-  External edge records : 383343
-Step build_csr_internal: 29.6813 ms
-Step upload_csr_to_device: 0.596237 ms
-Algorithm A initial fill: 0.649899 ms
-Algorithm A iteration 1 took 12.4857 ms, changed=true
-Algorithm A iteration 2 took 10.7191 ms, changed=true
-Algorithm A iteration 3 took 15.3519 ms, changed=true
-Algorithm A iteration 4 took 19.4814 ms, changed=true
-Algorithm A iteration 5 took 19.8981 ms, changed=true
-Algorithm A iteration 6 took 19.8933 ms, changed=false
-Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 122.056 ms
-Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 254.929 ms
-Step allocate_bitset_matrix_device (B): 0.589234 ms
-Algorithm B initial fill: 1.24097 ms, changed=true
-Algorithm B iteration 1 took 5.85822 ms, changed=true
-Algorithm B iteration 2 took 5.76312 ms, changed=true
-Algorithm B iteration 3 took 5.64714 ms, changed=true
-Algorithm B iteration 4 took 5.58174 ms, changed=true
-Algorithm B iteration 5 took 5.54991 ms, changed=true
-Algorithm B iteration 6 took 5.53803 ms, changed=true
-Algorithm B iteration 7 took 5.533 ms, changed=true
-Algorithm B iteration 8 took 5.53118 ms, changed=true
-Algorithm B iteration 9 took 5.53012 ms, changed=true
-Algorithm B iteration 10 took 5.53029 ms, changed=true
-Algorithm B iteration 11 took 5.53149 ms, changed=true
-Algorithm B iteration 12 took 5.52911 ms, changed=false
-Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 117.867 ms
-Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 217.122 ms
-Algorithm C build_adjacency_from_edges: 131.242 ms
-Algorithm C compute_transitive_closure_serial: 10989.7 ms
-Algorithm C flatten_closure to pairs: 296.821 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11418.1 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 704.216 ms
-
-===== iteration 5 / 10 on athena522 =====
-GPU initialization: 342.078 ms
-Total data rows (excluding header): 3528487
-Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2876.73 ms
-Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.3888 ms
-CSR graph over T:
-  num_rows (|T|)        : 131884
-  Internal edges (src∈T): 239064
-  External edges (src∉T): 383343
-  External edge records : 383343
-Step build_csr_internal: 28.9229 ms
-Step upload_csr_to_device: 0.553677 ms
-Algorithm A initial fill: 0.669916 ms
-Algorithm A iteration 1 took 12.7757 ms, changed=true
-Algorithm A iteration 2 took 10.7182 ms, changed=true
-Algorithm A iteration 3 took 15.3507 ms, changed=true
-Algorithm A iteration 4 took 19.4756 ms, changed=true
-Algorithm A iteration 5 took 19.8931 ms, changed=true
-Algorithm A iteration 6 took 19.9076 ms, changed=false
-Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 122.233 ms
-Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 254.654 ms
-Step allocate_bitset_matrix_device (B): 0.604132 ms
-Algorithm B initial fill: 1.23833 ms, changed=true
-Algorithm B iteration 1 took 6.1458 ms, changed=true
-Algorithm B iteration 2 took 6.04403 ms, changed=true
-Algorithm B iteration 3 took 5.92724 ms, changed=true
-Algorithm B iteration 4 took 5.85846 ms, changed=true
-Algorithm B iteration 5 took 5.6843 ms, changed=true
-Algorithm B iteration 6 took 5.53915 ms, changed=true
-Algorithm B iteration 7 took 5.53235 ms, changed=true
-Algorithm B iteration 8 took 5.532 ms, changed=true
-Algorithm B iteration 9 took 5.5292 ms, changed=true
-Algorithm B iteration 10 took 5.52897 ms, changed=true
-Algorithm B iteration 11 took 5.52689 ms, changed=true
-Algorithm B iteration 12 took 5.53001 ms, changed=false
-Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 116.935 ms
-Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 216.653 ms
-Algorithm C build_adjacency_from_edges: 130.233 ms
-Algorithm C compute_transitive_closure_serial: 10915 ms
-Algorithm C flatten_closure to pairs: 298.698 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11344.3 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 705.292 ms
-
-===== iteration 6 / 10 on athena522 =====
-GPU initialization: 340.544 ms
-Total data rows (excluding header): 3528487
-Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2953.3 ms
-Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.541 ms
-CSR graph over T:
-  num_rows (|T|)        : 131884
-  Internal edges (src∈T): 239064
-  External edges (src∉T): 383343
-  External edge records : 383343
-Step build_csr_internal: 28.7768 ms
-Step upload_csr_to_device: 0.560099 ms
-Algorithm A initial fill: 0.675607 ms
-Algorithm A iteration 1 took 12.5469 ms, changed=true
-Algorithm A iteration 2 took 10.7171 ms, changed=true
-Algorithm A iteration 3 took 15.3494 ms, changed=true
-Algorithm A iteration 4 took 19.4812 ms, changed=true
-Algorithm A iteration 5 took 19.8934 ms, changed=true
-Algorithm A iteration 6 took 19.9 ms, changed=false
-Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 119.147 ms
-Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 251.135 ms
-Step allocate_bitset_matrix_device (B): 0.574406 ms
-Algorithm B initial fill: 1.28529 ms, changed=true
-Algorithm B iteration 1 took 5.85854 ms, changed=true
-Algorithm B iteration 2 took 5.76659 ms, changed=true
-Algorithm B iteration 3 took 5.64871 ms, changed=true
-Algorithm B iteration 4 took 5.58198 ms, changed=true
-Algorithm B iteration 5 took 5.55187 ms, changed=true
-Algorithm B iteration 6 took 5.5378 ms, changed=true
-Algorithm B iteration 7 took 5.53178 ms, changed=true
-Algorithm B iteration 8 took 5.53305 ms, changed=true
-Algorithm B iteration 9 took 5.53198 ms, changed=true
-Algorithm B iteration 10 took 5.5311 ms, changed=true
-Algorithm B iteration 11 took 5.53038 ms, changed=true
-Algorithm B iteration 12 took 5.52978 ms, changed=false
-Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 114.777 ms
-Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 213.132 ms
-Algorithm C build_adjacency_from_edges: 130.529 ms
-Algorithm C compute_transitive_closure_serial: 11139.7 ms
-Algorithm C flatten_closure to pairs: 298.724 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11569.4 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 704.219 ms
-
-===== iteration 7 / 10 on athena522 =====
-GPU initialization: 331.182 ms
-Total data rows (excluding header): 3528487
-Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2959.95 ms
-Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.1422 ms
-CSR graph over T:
-  num_rows (|T|)        : 131884
-  Internal edges (src∈T): 239064
-  External edges (src∉T): 383343
-  External edge records : 383343
-Step build_csr_internal: 27.2467 ms
-Step upload_csr_to_device: 0.57665 ms
-Algorithm A initial fill: 0.699993 ms
-Algorithm A iteration 1 took 12.1866 ms, changed=true
-Algorithm A iteration 2 took 10.7243 ms, changed=true
-Algorithm A iteration 3 took 15.344 ms, changed=true
-Algorithm A iteration 4 took 19.4713 ms, changed=true
-Algorithm A iteration 5 took 19.9136 ms, changed=true
+Step build_csr_internal: 29.8117 ms
+Step upload_csr_to_device: 4.20697 ms
+Algorithm A initial fill: 1.54285 ms
+Algorithm A iteration 1 took 12.3386 ms, changed=true
+Algorithm A iteration 2 took 10.7198 ms, changed=true
+Algorithm A iteration 3 took 15.3497 ms, changed=true
+Algorithm A iteration 4 took 19.4708 ms, changed=true
+Algorithm A iteration 5 took 19.9012 ms, changed=true
 Algorithm A iteration 6 took 19.9024 ms, changed=false
 Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 119.088 ms
+Algorithm A convert + external closure: 129.949 ms
 Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 249.172 ms
-Step allocate_bitset_matrix_device (B): 0.607078 ms
-Algorithm B initial fill: 1.24117 ms, changed=true
-Algorithm B iteration 1 took 5.85663 ms, changed=true
-Algorithm B iteration 2 took 5.763 ms, changed=true
-Algorithm B iteration 3 took 5.64775 ms, changed=true
-Algorithm B iteration 4 took 5.58177 ms, changed=true
-Algorithm B iteration 5 took 5.54947 ms, changed=true
-Algorithm B iteration 6 took 5.5376 ms, changed=true
-Algorithm B iteration 7 took 5.53245 ms, changed=true
-Algorithm B iteration 8 took 5.53091 ms, changed=true
-Algorithm B iteration 9 took 5.52803 ms, changed=true
-Algorithm B iteration 10 took 5.52908 ms, changed=true
-Algorithm B iteration 11 took 5.53034 ms, changed=true
-Algorithm B iteration 12 took 5.53101 ms, changed=false
+Algorithm A total time: 269.283 ms
+Step allocate_bitset_matrix_device (B): 0.579396 ms
+Algorithm B initial fill: 1.71101 ms, changed=true
+Algorithm B iteration 1 took 6.14342 ms, changed=true
+Algorithm B iteration 2 took 6.04438 ms, changed=true
+Algorithm B iteration 3 took 5.92888 ms, changed=true
+Algorithm B iteration 4 took 5.85761 ms, changed=true
+Algorithm B iteration 5 took 5.72764 ms, changed=true
+Algorithm B iteration 6 took 5.53724 ms, changed=true
+Algorithm B iteration 7 took 5.53518 ms, changed=true
+Algorithm B iteration 8 took 5.53128 ms, changed=true
+Algorithm B iteration 9 took 5.53098 ms, changed=true
+Algorithm B iteration 10 took 5.53158 ms, changed=true
+Algorithm B iteration 11 took 5.52843 ms, changed=true
+Algorithm B iteration 12 took 5.53135 ms, changed=false
 Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 114.542 ms
+Algorithm B convert + external closure: 125.817 ms
 Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 211.354 ms
-Algorithm C build_adjacency_from_edges: 124.857 ms
-Algorithm C compute_transitive_closure_serial: 10914.6 ms
-Algorithm C flatten_closure to pairs: 297.687 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11337.4 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 702.339 ms
+Algorithm B total time: 230.583 ms
+Algorithm A-serial build_adjacency_from_edges: 131.593 ms
+Algorithm A-serial iteration 1 took 223.037 ms, changed=true
+Algorithm A-serial iteration 2 took 563.987 ms, changed=true
+Algorithm A-serial iteration 3 took 1434.39 ms, changed=true
+Algorithm A-serial iteration 4 took 1876.46 ms, changed=true
+Algorithm A-serial iteration 5 took 1600.63 ms, changed=true
+Algorithm A-serial iteration 6 took 1564.3 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8356.48 ms
+Algorithm A-serial flatten_closure to pairs: 53.1557 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8541.24 ms
+Algorithm B-serial build_adjacency_from_edges: 106.062 ms
+Algorithm B-serial iteration 1 took 439.429 ms, changed=true
+Algorithm B-serial iteration 2 took 610.273 ms, changed=true
+Algorithm B-serial iteration 3 took 674.228 ms, changed=true
+Algorithm B-serial iteration 4 took 683.036 ms, changed=true
+Algorithm B-serial iteration 5 took 589.116 ms, changed=true
+Algorithm B-serial iteration 6 took 439.674 ms, changed=true
+Algorithm B-serial iteration 7 took 276.619 ms, changed=true
+Algorithm B-serial iteration 8 took 167.624 ms, changed=true
+Algorithm B-serial iteration 9 took 90.1559 ms, changed=true
+Algorithm B-serial iteration 10 took 46.7283 ms, changed=true
+Algorithm B-serial iteration 11 took 21.1693 ms, changed=true
+Algorithm B-serial iteration 12 took 8.94704 ms, changed=true
+Algorithm B-serial iteration 13 took 6.04684 ms, changed=true
+Algorithm B-serial iteration 14 took 3.20569 ms, changed=true
+Algorithm B-serial iteration 15 took 1.53087 ms, changed=true
+Algorithm B-serial iteration 16 took 1.92633 ms, changed=true
+Algorithm B-serial iteration 17 took 0.541373 ms, changed=true
+Algorithm B-serial iteration 18 took 0.079981 ms, changed=true
+Algorithm B-serial iteration 19 took 0.009939 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002335 ms, changed=true
+Algorithm B-serial iteration 21 took 0.00045 ms, changed=true
+Algorithm B-serial iteration 22 took 9e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4949.62 ms
+Algorithm B-serial flatten_closure to pairs: 378.442 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5434.15 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.946 ms
+
+===== iteration 4 / 10 on athena522 =====
+GPU initialization: 352.646 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 3018.08 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.066 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 29.0976 ms
+Step upload_csr_to_device: 3.15595 ms
+Algorithm A initial fill: 1.40568 ms
+Algorithm A iteration 1 took 12.3941 ms, changed=true
+Algorithm A iteration 2 took 10.7222 ms, changed=true
+Algorithm A iteration 3 took 15.3519 ms, changed=true
+Algorithm A iteration 4 took 19.4745 ms, changed=true
+Algorithm A iteration 5 took 19.8942 ms, changed=true
+Algorithm A iteration 6 took 19.8941 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 127.859 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 265.028 ms
+Step allocate_bitset_matrix_device (B): 0.619462 ms
+Algorithm B initial fill: 1.70484 ms, changed=true
+Algorithm B iteration 1 took 5.86058 ms, changed=true
+Algorithm B iteration 2 took 5.76642 ms, changed=true
+Algorithm B iteration 3 took 5.64987 ms, changed=true
+Algorithm B iteration 4 took 5.58072 ms, changed=true
+Algorithm B iteration 5 took 5.54929 ms, changed=true
+Algorithm B iteration 6 took 5.53901 ms, changed=true
+Algorithm B iteration 7 took 5.53231 ms, changed=true
+Algorithm B iteration 8 took 5.53059 ms, changed=true
+Algorithm B iteration 9 took 5.52968 ms, changed=true
+Algorithm B iteration 10 took 5.53165 ms, changed=true
+Algorithm B iteration 11 took 5.53853 ms, changed=true
+Algorithm B iteration 12 took 5.53019 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 123.654 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 225.398 ms
+Algorithm A-serial build_adjacency_from_edges: 130.834 ms
+Algorithm A-serial iteration 1 took 221.202 ms, changed=true
+Algorithm A-serial iteration 2 took 540.341 ms, changed=true
+Algorithm A-serial iteration 3 took 1414.97 ms, changed=true
+Algorithm A-serial iteration 4 took 1939.59 ms, changed=true
+Algorithm A-serial iteration 5 took 1612.27 ms, changed=true
+Algorithm A-serial iteration 6 took 1569.31 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8394.87 ms
+Algorithm A-serial flatten_closure to pairs: 53.0462 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8578.76 ms
+Algorithm B-serial build_adjacency_from_edges: 103.174 ms
+Algorithm B-serial iteration 1 took 445.25 ms, changed=true
+Algorithm B-serial iteration 2 took 611.355 ms, changed=true
+Algorithm B-serial iteration 3 took 667.409 ms, changed=true
+Algorithm B-serial iteration 4 took 681.61 ms, changed=true
+Algorithm B-serial iteration 5 took 583.953 ms, changed=true
+Algorithm B-serial iteration 6 took 418.863 ms, changed=true
+Algorithm B-serial iteration 7 took 263.306 ms, changed=true
+Algorithm B-serial iteration 8 took 157.178 ms, changed=true
+Algorithm B-serial iteration 9 took 91.2616 ms, changed=true
+Algorithm B-serial iteration 10 took 46.9992 ms, changed=true
+Algorithm B-serial iteration 11 took 21.6008 ms, changed=true
+Algorithm B-serial iteration 12 took 9.23705 ms, changed=true
+Algorithm B-serial iteration 13 took 6.11228 ms, changed=true
+Algorithm B-serial iteration 14 took 3.20515 ms, changed=true
+Algorithm B-serial iteration 15 took 1.54492 ms, changed=true
+Algorithm B-serial iteration 16 took 1.92712 ms, changed=true
+Algorithm B-serial iteration 17 took 0.56063 ms, changed=true
+Algorithm B-serial iteration 18 took 0.07923 ms, changed=true
+Algorithm B-serial iteration 19 took 0.01052 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002435 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000491 ms, changed=true
+Algorithm B-serial iteration 22 took 7e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4895.43 ms
+Algorithm B-serial flatten_closure to pairs: 375.862 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5374.49 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.61 ms
+
+===== iteration 5 / 10 on athena522 =====
+GPU initialization: 357.215 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 3000.01 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 12.3324 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 30.2554 ms
+Step upload_csr_to_device: 2.90804 ms
+Algorithm A initial fill: 1.43824 ms
+Algorithm A iteration 1 took 12.2056 ms, changed=true
+Algorithm A iteration 2 took 10.7209 ms, changed=true
+Algorithm A iteration 3 took 15.3588 ms, changed=true
+Algorithm A iteration 4 took 19.471 ms, changed=true
+Algorithm A iteration 5 took 19.8842 ms, changed=true
+Algorithm A iteration 6 took 19.9095 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 128.36 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 266.58 ms
+Step allocate_bitset_matrix_device (B): 0.579757 ms
+Algorithm B initial fill: 1.66269 ms, changed=true
+Algorithm B iteration 1 took 5.87689 ms, changed=true
+Algorithm B iteration 2 took 5.7813 ms, changed=true
+Algorithm B iteration 3 took 5.66525 ms, changed=true
+Algorithm B iteration 4 took 5.59629 ms, changed=true
+Algorithm B iteration 5 took 5.56661 ms, changed=true
+Algorithm B iteration 6 took 5.55998 ms, changed=true
+Algorithm B iteration 7 took 5.55719 ms, changed=true
+Algorithm B iteration 8 took 5.5395 ms, changed=true
+Algorithm B iteration 9 took 5.53043 ms, changed=true
+Algorithm B iteration 10 took 5.53273 ms, changed=true
+Algorithm B iteration 11 took 5.5308 ms, changed=true
+Algorithm B iteration 12 took 5.53057 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 123.419 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 226.122 ms
+Algorithm A-serial build_adjacency_from_edges: 130.663 ms
+Algorithm A-serial iteration 1 took 225.397 ms, changed=true
+Algorithm A-serial iteration 2 took 552.236 ms, changed=true
+Algorithm A-serial iteration 3 took 1443.95 ms, changed=true
+Algorithm A-serial iteration 4 took 1894.92 ms, changed=true
+Algorithm A-serial iteration 5 took 1610.11 ms, changed=true
+Algorithm A-serial iteration 6 took 1550.77 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8375.72 ms
+Algorithm A-serial flatten_closure to pairs: 53.7089 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8560.1 ms
+Algorithm B-serial build_adjacency_from_edges: 115.325 ms
+Algorithm B-serial iteration 1 took 457.688 ms, changed=true
+Algorithm B-serial iteration 2 took 626.334 ms, changed=true
+Algorithm B-serial iteration 3 took 676.688 ms, changed=true
+Algorithm B-serial iteration 4 took 688.895 ms, changed=true
+Algorithm B-serial iteration 5 took 600.156 ms, changed=true
+Algorithm B-serial iteration 6 took 447.304 ms, changed=true
+Algorithm B-serial iteration 7 took 271.701 ms, changed=true
+Algorithm B-serial iteration 8 took 159.089 ms, changed=true
+Algorithm B-serial iteration 9 took 93.5688 ms, changed=true
+Algorithm B-serial iteration 10 took 47.6798 ms, changed=true
+Algorithm B-serial iteration 11 took 21.5527 ms, changed=true
+Algorithm B-serial iteration 12 took 8.99654 ms, changed=true
+Algorithm B-serial iteration 13 took 6.11712 ms, changed=true
+Algorithm B-serial iteration 14 took 3.26135 ms, changed=true
+Algorithm B-serial iteration 15 took 1.56038 ms, changed=true
+Algorithm B-serial iteration 16 took 1.97912 ms, changed=true
+Algorithm B-serial iteration 17 took 0.566551 ms, changed=true
+Algorithm B-serial iteration 18 took 0.086584 ms, changed=true
+Algorithm B-serial iteration 19 took 0.011161 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002335 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000511 ms, changed=true
+Algorithm B-serial iteration 22 took 9.1e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 5004.27 ms
+Algorithm B-serial flatten_closure to pairs: 386.906 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5506.53 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.361 ms
+
+===== iteration 6 / 10 on athena522 =====
+GPU initialization: 349.173 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 3010.76 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 11.8747 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 30.1624 ms
+Step upload_csr_to_device: 2.86849 ms
+Algorithm A initial fill: 1.41165 ms
+Algorithm A iteration 1 took 12.2366 ms, changed=true
+Algorithm A iteration 2 took 10.7207 ms, changed=true
+Algorithm A iteration 3 took 15.3536 ms, changed=true
+Algorithm A iteration 4 took 19.4751 ms, changed=true
+Algorithm A iteration 5 took 19.8935 ms, changed=true
+Algorithm A iteration 6 took 19.9137 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 130.285 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 267.986 ms
+Step allocate_bitset_matrix_device (B): 0.595796 ms
+Algorithm B initial fill: 1.65508 ms, changed=true
+Algorithm B iteration 1 took 5.85569 ms, changed=true
+Algorithm B iteration 2 took 5.76295 ms, changed=true
+Algorithm B iteration 3 took 5.64738 ms, changed=true
+Algorithm B iteration 4 took 5.58026 ms, changed=true
+Algorithm B iteration 5 took 5.55096 ms, changed=true
+Algorithm B iteration 6 took 5.53853 ms, changed=true
+Algorithm B iteration 7 took 5.53494 ms, changed=true
+Algorithm B iteration 8 took 5.53015 ms, changed=true
+Algorithm B iteration 9 took 5.52993 ms, changed=true
+Algorithm B iteration 10 took 5.53163 ms, changed=true
+Algorithm B iteration 11 took 5.53126 ms, changed=true
+Algorithm B iteration 12 took 5.53052 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 125.34 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 227.776 ms
+Algorithm A-serial build_adjacency_from_edges: 128.159 ms
+Algorithm A-serial iteration 1 took 226.279 ms, changed=true
+Algorithm A-serial iteration 2 took 548.66 ms, changed=true
+Algorithm A-serial iteration 3 took 1432.72 ms, changed=true
+Algorithm A-serial iteration 4 took 1902.69 ms, changed=true
+Algorithm A-serial iteration 5 took 1589.19 ms, changed=true
+Algorithm A-serial iteration 6 took 1573.66 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8367.75 ms
+Algorithm A-serial flatten_closure to pairs: 53.1574 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8549.08 ms
+Algorithm B-serial build_adjacency_from_edges: 105.072 ms
+Algorithm B-serial iteration 1 took 440.82 ms, changed=true
+Algorithm B-serial iteration 2 took 600.492 ms, changed=true
+Algorithm B-serial iteration 3 took 677.093 ms, changed=true
+Algorithm B-serial iteration 4 took 673.255 ms, changed=true
+Algorithm B-serial iteration 5 took 583.831 ms, changed=true
+Algorithm B-serial iteration 6 took 439.949 ms, changed=true
+Algorithm B-serial iteration 7 took 268.188 ms, changed=true
+Algorithm B-serial iteration 8 took 152.152 ms, changed=true
+Algorithm B-serial iteration 9 took 93.9053 ms, changed=true
+Algorithm B-serial iteration 10 took 46.4166 ms, changed=true
+Algorithm B-serial iteration 11 took 20.8756 ms, changed=true
+Algorithm B-serial iteration 12 took 8.56383 ms, changed=true
+Algorithm B-serial iteration 13 took 5.83715 ms, changed=true
+Algorithm B-serial iteration 14 took 3.11029 ms, changed=true
+Algorithm B-serial iteration 15 took 1.5208 ms, changed=true
+Algorithm B-serial iteration 16 took 1.87715 ms, changed=true
+Algorithm B-serial iteration 17 took 0.541364 ms, changed=true
+Algorithm B-serial iteration 18 took 0.08435 ms, changed=true
+Algorithm B-serial iteration 19 took 0.010009 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002474 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000471 ms, changed=true
+Algorithm B-serial iteration 22 took 0.0001 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4912.52 ms
+Algorithm B-serial flatten_closure to pairs: 378.786 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5396.4 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.851 ms
+
+===== iteration 7 / 10 on athena522 =====
+GPU initialization: 341.188 ms
+Total data rows (excluding header): 3528487
+Loaded isA edges (src,dst pairs): 622407
+Step load_isA_edges: 2968.74 ms
+Unique destinationIds (index_size): 131884
+Step build_dest_mapping: 12.5731 ms
+CSR graph over T:
+  num_rows (|T|)        : 131884
+  Internal edges (src∈T): 239064
+  External edges (src∉T): 383343
+  External edge records : 383343
+Step build_csr_internal: 30.8088 ms
+Step upload_csr_to_device: 2.92069 ms
+Algorithm A initial fill: 1.40454 ms
+Algorithm A iteration 1 took 12.2759 ms, changed=true
+Algorithm A iteration 2 took 10.7212 ms, changed=true
+Algorithm A iteration 3 took 15.3401 ms, changed=true
+Algorithm A iteration 4 took 19.4691 ms, changed=true
+Algorithm A iteration 5 took 19.889 ms, changed=true
+Algorithm A iteration 6 took 19.9055 ms, changed=false
+Algorithm A iterations until fixed point: 6
+Algorithm A convert + external closure: 130.236 ms
+Algorithm A closure total pairs (including external): 7543811
+Algorithm A total time: 268.85 ms
+Step allocate_bitset_matrix_device (B): 0.617397 ms
+Algorithm B initial fill: 1.67818 ms, changed=true
+Algorithm B iteration 1 took 5.85762 ms, changed=true
+Algorithm B iteration 2 took 5.76344 ms, changed=true
+Algorithm B iteration 3 took 5.65072 ms, changed=true
+Algorithm B iteration 4 took 5.58215 ms, changed=true
+Algorithm B iteration 5 took 5.55053 ms, changed=true
+Algorithm B iteration 6 took 5.53789 ms, changed=true
+Algorithm B iteration 7 took 5.53408 ms, changed=true
+Algorithm B iteration 8 took 5.53096 ms, changed=true
+Algorithm B iteration 9 took 5.53128 ms, changed=true
+Algorithm B iteration 10 took 5.53071 ms, changed=true
+Algorithm B iteration 11 took 5.53621 ms, changed=true
+Algorithm B iteration 12 took 5.53008 ms, changed=false
+Algorithm B iterations until fixed point: 12
+Algorithm B convert + external closure: 121.298 ms
+Algorithm B closure total pairs (including external): 7543811
+Algorithm B total time: 224.487 ms
+Algorithm A-serial build_adjacency_from_edges: 129.183 ms
+Algorithm A-serial iteration 1 took 222.668 ms, changed=true
+Algorithm A-serial iteration 2 took 548.538 ms, changed=true
+Algorithm A-serial iteration 3 took 1435.3 ms, changed=true
+Algorithm A-serial iteration 4 took 1884.96 ms, changed=true
+Algorithm A-serial iteration 5 took 1606.54 ms, changed=true
+Algorithm A-serial iteration 6 took 1542.09 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8338.91 ms
+Algorithm A-serial flatten_closure to pairs: 53.0508 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8521.16 ms
+Algorithm B-serial build_adjacency_from_edges: 110.713 ms
+Algorithm B-serial iteration 1 took 445.03 ms, changed=true
+Algorithm B-serial iteration 2 took 603.26 ms, changed=true
+Algorithm B-serial iteration 3 took 672.625 ms, changed=true
+Algorithm B-serial iteration 4 took 680.365 ms, changed=true
+Algorithm B-serial iteration 5 took 588.379 ms, changed=true
+Algorithm B-serial iteration 6 took 438.199 ms, changed=true
+Algorithm B-serial iteration 7 took 267.704 ms, changed=true
+Algorithm B-serial iteration 8 took 165.173 ms, changed=true
+Algorithm B-serial iteration 9 took 92.7225 ms, changed=true
+Algorithm B-serial iteration 10 took 46.5469 ms, changed=true
+Algorithm B-serial iteration 11 took 21.6025 ms, changed=true
+Algorithm B-serial iteration 12 took 9.41582 ms, changed=true
+Algorithm B-serial iteration 13 took 6.07902 ms, changed=true
+Algorithm B-serial iteration 14 took 3.19178 ms, changed=true
+Algorithm B-serial iteration 15 took 1.52702 ms, changed=true
+Algorithm B-serial iteration 16 took 1.94049 ms, changed=true
+Algorithm B-serial iteration 17 took 0.5662 ms, changed=true
+Algorithm B-serial iteration 18 took 0.07959 ms, changed=true
+Algorithm B-serial iteration 19 took 0.01046 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002274 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000471 ms, changed=true
+Algorithm B-serial iteration 22 took 8e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4933.95 ms
+Algorithm B-serial flatten_closure to pairs: 375.846 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5420.53 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.355 ms
 
 ===== iteration 8 / 10 on athena522 =====
-GPU initialization: 336.751 ms
+GPU initialization: 353.267 ms
 Total data rows (excluding header): 3528487
 Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2899.75 ms
+Step load_isA_edges: 3015.34 ms
 Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 10.9549 ms
+Step build_dest_mapping: 11.9587 ms
 CSR graph over T:
   num_rows (|T|)        : 131884
   Internal edges (src∈T): 239064
   External edges (src∉T): 383343
   External edge records : 383343
-Step build_csr_internal: 28.1669 ms
-Step upload_csr_to_device: 0.572272 ms
-Algorithm A initial fill: 0.673193 ms
-Algorithm A iteration 1 took 12.5991 ms, changed=true
-Algorithm A iteration 2 took 10.7148 ms, changed=true
-Algorithm A iteration 3 took 15.3517 ms, changed=true
-Algorithm A iteration 4 took 19.4706 ms, changed=true
-Algorithm A iteration 5 took 19.8995 ms, changed=true
-Algorithm A iteration 6 took 19.9159 ms, changed=false
+Step build_csr_internal: 29.7278 ms
+Step upload_csr_to_device: 3.3931 ms
+Algorithm A initial fill: 1.40371 ms
+Algorithm A iteration 1 took 12.3093 ms, changed=true
+Algorithm A iteration 2 took 10.725 ms, changed=true
+Algorithm A iteration 3 took 15.3476 ms, changed=true
+Algorithm A iteration 4 took 19.4734 ms, changed=true
+Algorithm A iteration 5 took 19.8986 ms, changed=true
+Algorithm A iteration 6 took 19.8969 ms, changed=false
 Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 123.799 ms
+Algorithm A convert + external closure: 127.426 ms
 Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 255.437 ms
-Step allocate_bitset_matrix_device (B): 0.583382 ms
-Algorithm B initial fill: 1.23389 ms, changed=true
-Algorithm B iteration 1 took 5.86346 ms, changed=true
-Algorithm B iteration 2 took 5.76387 ms, changed=true
-Algorithm B iteration 3 took 5.6507 ms, changed=true
-Algorithm B iteration 4 took 5.58087 ms, changed=true
-Algorithm B iteration 5 took 5.54972 ms, changed=true
-Algorithm B iteration 6 took 5.53528 ms, changed=true
-Algorithm B iteration 7 took 5.53257 ms, changed=true
-Algorithm B iteration 8 took 5.52775 ms, changed=true
-Algorithm B iteration 9 took 5.52875 ms, changed=true
-Algorithm B iteration 10 took 5.52864 ms, changed=true
-Algorithm B iteration 11 took 5.52885 ms, changed=true
-Algorithm B iteration 12 took 5.52702 ms, changed=false
+Algorithm A total time: 265.294 ms
+Step allocate_bitset_matrix_device (B): 0.604713 ms
+Algorithm B initial fill: 1.7263 ms, changed=true
+Algorithm B iteration 1 took 5.85777 ms, changed=true
+Algorithm B iteration 2 took 5.76424 ms, changed=true
+Algorithm B iteration 3 took 5.65065 ms, changed=true
+Algorithm B iteration 4 took 5.57986 ms, changed=true
+Algorithm B iteration 5 took 5.55015 ms, changed=true
+Algorithm B iteration 6 took 5.53803 ms, changed=true
+Algorithm B iteration 7 took 5.53032 ms, changed=true
+Algorithm B iteration 8 took 5.5319 ms, changed=true
+Algorithm B iteration 9 took 5.53049 ms, changed=true
+Algorithm B iteration 10 took 5.52961 ms, changed=true
+Algorithm B iteration 11 took 5.53035 ms, changed=true
+Algorithm B iteration 12 took 5.53277 ms, changed=false
 Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 117.099 ms
+Algorithm B convert + external closure: 123.3 ms
 Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 214.796 ms
-Algorithm C build_adjacency_from_edges: 127.728 ms
-Algorithm C compute_transitive_closure_serial: 10758.8 ms
-Algorithm C flatten_closure to pairs: 297.387 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11184.3 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 702.338 ms
+Algorithm B total time: 225.907 ms
+Algorithm A-serial build_adjacency_from_edges: 128.882 ms
+Algorithm A-serial iteration 1 took 224.487 ms, changed=true
+Algorithm A-serial iteration 2 took 552.398 ms, changed=true
+Algorithm A-serial iteration 3 took 1431.58 ms, changed=true
+Algorithm A-serial iteration 4 took 1936.5 ms, changed=true
+Algorithm A-serial iteration 5 took 1594.1 ms, changed=true
+Algorithm A-serial iteration 6 took 1541.8 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8380.99 ms
+Algorithm A-serial flatten_closure to pairs: 52.7774 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8562.66 ms
+Algorithm B-serial build_adjacency_from_edges: 102.626 ms
+Algorithm B-serial iteration 1 took 439.598 ms, changed=true
+Algorithm B-serial iteration 2 took 617.02 ms, changed=true
+Algorithm B-serial iteration 3 took 671.509 ms, changed=true
+Algorithm B-serial iteration 4 took 667.058 ms, changed=true
+Algorithm B-serial iteration 5 took 582.162 ms, changed=true
+Algorithm B-serial iteration 6 took 420.067 ms, changed=true
+Algorithm B-serial iteration 7 took 277.33 ms, changed=true
+Algorithm B-serial iteration 8 took 154.369 ms, changed=true
+Algorithm B-serial iteration 9 took 88.5745 ms, changed=true
+Algorithm B-serial iteration 10 took 46.9182 ms, changed=true
+Algorithm B-serial iteration 11 took 22.3637 ms, changed=true
+Algorithm B-serial iteration 12 took 8.88576 ms, changed=true
+Algorithm B-serial iteration 13 took 5.78425 ms, changed=true
+Algorithm B-serial iteration 14 took 3.11375 ms, changed=true
+Algorithm B-serial iteration 15 took 1.49781 ms, changed=true
+Algorithm B-serial iteration 16 took 1.8558 ms, changed=true
+Algorithm B-serial iteration 17 took 0.542866 ms, changed=true
+Algorithm B-serial iteration 18 took 0.076875 ms, changed=true
+Algorithm B-serial iteration 19 took 0.009678 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002375 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000431 ms, changed=true
+Algorithm B-serial iteration 22 took 9.1e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4900.12 ms
+Algorithm B-serial flatten_closure to pairs: 375.971 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5378.74 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 706.827 ms
 
 ===== iteration 9 / 10 on athena522 =====
-GPU initialization: 330.222 ms
+GPU initialization: 335.955 ms
 Total data rows (excluding header): 3528487
 Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2901.27 ms
+Step load_isA_edges: 3014.86 ms
 Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 11.4527 ms
+Step build_dest_mapping: 11.6964 ms
 CSR graph over T:
   num_rows (|T|)        : 131884
   Internal edges (src∈T): 239064
   External edges (src∉T): 383343
   External edge records : 383343
-Step build_csr_internal: 28.5891 ms
-Step upload_csr_to_device: 0.617608 ms
-Algorithm A initial fill: 0.686558 ms
-Algorithm A iteration 1 took 12.2098 ms, changed=true
-Algorithm A iteration 2 took 10.7191 ms, changed=true
-Algorithm A iteration 3 took 15.348 ms, changed=true
-Algorithm A iteration 4 took 19.4711 ms, changed=true
-Algorithm A iteration 5 took 19.8941 ms, changed=true
-Algorithm A iteration 6 took 19.9108 ms, changed=false
+Step build_csr_internal: 29.5651 ms
+Step upload_csr_to_device: 2.89764 ms
+Algorithm A initial fill: 1.42527 ms
+Algorithm A iteration 1 took 12.3977 ms, changed=true
+Algorithm A iteration 2 took 10.7186 ms, changed=true
+Algorithm A iteration 3 took 15.3471 ms, changed=true
+Algorithm A iteration 4 took 19.4733 ms, changed=true
+Algorithm A iteration 5 took 19.8969 ms, changed=true
+Algorithm A iteration 6 took 19.8955 ms, changed=false
 Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 119.255 ms
+Algorithm A convert + external closure: 128.605 ms
 Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 250.751 ms
-Step allocate_bitset_matrix_device (B): 0.600555 ms
-Algorithm B initial fill: 1.2416 ms, changed=true
-Algorithm B iteration 1 took 6.14024 ms, changed=true
-Algorithm B iteration 2 took 6.04475 ms, changed=true
-Algorithm B iteration 3 took 5.92708 ms, changed=true
-Algorithm B iteration 4 took 5.86047 ms, changed=true
-Algorithm B iteration 5 took 5.83114 ms, changed=true
-Algorithm B iteration 6 took 5.81723 ms, changed=true
-Algorithm B iteration 7 took 5.81122 ms, changed=true
-Algorithm B iteration 8 took 5.81271 ms, changed=true
-Algorithm B iteration 9 took 5.74925 ms, changed=true
-Algorithm B iteration 10 took 5.52939 ms, changed=true
-Algorithm B iteration 11 took 5.53059 ms, changed=true
-Algorithm B iteration 12 took 5.53218 ms, changed=false
+Algorithm A total time: 266.094 ms
+Step allocate_bitset_matrix_device (B): 0.617427 ms
+Algorithm B initial fill: 1.69211 ms, changed=true
+Algorithm B iteration 1 took 5.86872 ms, changed=true
+Algorithm B iteration 2 took 5.76019 ms, changed=true
+Algorithm B iteration 3 took 5.64772 ms, changed=true
+Algorithm B iteration 4 took 5.57616 ms, changed=true
+Algorithm B iteration 5 took 5.54897 ms, changed=true
+Algorithm B iteration 6 took 5.5336 ms, changed=true
+Algorithm B iteration 7 took 5.53109 ms, changed=true
+Algorithm B iteration 8 took 5.52875 ms, changed=true
+Algorithm B iteration 9 took 5.52711 ms, changed=true
+Algorithm B iteration 10 took 5.52773 ms, changed=true
+Algorithm B iteration 11 took 5.52924 ms, changed=true
+Algorithm B iteration 12 took 5.52748 ms, changed=false
 Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 116.095 ms
+Algorithm B convert + external closure: 121.581 ms
 Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 216.755 ms
-Algorithm C build_adjacency_from_edges: 126.779 ms
-Algorithm C compute_transitive_closure_serial: 11131.4 ms
-Algorithm C flatten_closure to pairs: 299.64 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11557.8 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 704.822 ms
+Algorithm B total time: 223.488 ms
+Algorithm A-serial build_adjacency_from_edges: 130.264 ms
+Algorithm A-serial iteration 1 took 222.276 ms, changed=true
+Algorithm A-serial iteration 2 took 563.466 ms, changed=true
+Algorithm A-serial iteration 3 took 1437.63 ms, changed=true
+Algorithm A-serial iteration 4 took 1924.3 ms, changed=true
+Algorithm A-serial iteration 5 took 1621.15 ms, changed=true
+Algorithm A-serial iteration 6 took 1563.78 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8427.39 ms
+Algorithm A-serial flatten_closure to pairs: 52.6836 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8610.35 ms
+Algorithm B-serial build_adjacency_from_edges: 103.336 ms
+Algorithm B-serial iteration 1 took 442.004 ms, changed=true
+Algorithm B-serial iteration 2 took 617.968 ms, changed=true
+Algorithm B-serial iteration 3 took 661.754 ms, changed=true
+Algorithm B-serial iteration 4 took 679.463 ms, changed=true
+Algorithm B-serial iteration 5 took 587.949 ms, changed=true
+Algorithm B-serial iteration 6 took 435.418 ms, changed=true
+Algorithm B-serial iteration 7 took 259.684 ms, changed=true
+Algorithm B-serial iteration 8 took 171.632 ms, changed=true
+Algorithm B-serial iteration 9 took 90.5108 ms, changed=true
+Algorithm B-serial iteration 10 took 47.0558 ms, changed=true
+Algorithm B-serial iteration 11 took 21.6497 ms, changed=true
+Algorithm B-serial iteration 12 took 9.29233 ms, changed=true
+Algorithm B-serial iteration 13 took 6.12331 ms, changed=true
+Algorithm B-serial iteration 14 took 3.19565 ms, changed=true
+Algorithm B-serial iteration 15 took 1.52941 ms, changed=true
+Algorithm B-serial iteration 16 took 1.93981 ms, changed=true
+Algorithm B-serial iteration 17 took 0.544219 ms, changed=true
+Algorithm B-serial iteration 18 took 0.089199 ms, changed=true
+Algorithm B-serial iteration 19 took 0.01058 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002344 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000461 ms, changed=true
+Algorithm B-serial iteration 22 took 7e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4924.13 ms
+Algorithm B-serial flatten_closure to pairs: 379.2 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5406.69 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 706.628 ms
 
 ===== iteration 10 / 10 on athena522 =====
-GPU initialization: 324.497 ms
+GPU initialization: 352.745 ms
 Total data rows (excluding header): 3528487
 Loaded isA edges (src,dst pairs): 622407
-Step load_isA_edges: 2899.12 ms
+Step load_isA_edges: 3014.55 ms
 Unique destinationIds (index_size): 131884
-Step build_dest_mapping: 10.4717 ms
+Step build_dest_mapping: 11.8785 ms
 CSR graph over T:
   num_rows (|T|)        : 131884
   Internal edges (src∈T): 239064
   External edges (src∉T): 383343
   External edge records : 383343
-Step build_csr_internal: 27.1699 ms
-Step upload_csr_to_device: 0.557454 ms
-Algorithm A initial fill: 0.691837 ms
-Algorithm A iteration 1 took 12.1005 ms, changed=true
-Algorithm A iteration 2 took 10.7189 ms, changed=true
-Algorithm A iteration 3 took 15.3583 ms, changed=true
-Algorithm A iteration 4 took 19.4761 ms, changed=true
-Algorithm A iteration 5 took 19.8925 ms, changed=true
-Algorithm A iteration 6 took 19.8913 ms, changed=false
+Step build_csr_internal: 29.9082 ms
+Step upload_csr_to_device: 3.00259 ms
+Algorithm A initial fill: 1.41691 ms
+Algorithm A iteration 1 took 12.4444 ms, changed=true
+Algorithm A iteration 2 took 10.7199 ms, changed=true
+Algorithm A iteration 3 took 15.3527 ms, changed=true
+Algorithm A iteration 4 took 19.4736 ms, changed=true
+Algorithm A iteration 5 took 19.8988 ms, changed=true
+Algorithm A iteration 6 took 19.9035 ms, changed=false
 Algorithm A iterations until fixed point: 6
-Algorithm A convert + external closure: 118.42 ms
+Algorithm A convert + external closure: 130.033 ms
 Algorithm A closure total pairs (including external): 7543811
-Algorithm A total time: 248.22 ms
-Step allocate_bitset_matrix_device (B): 0.600736 ms
-Algorithm B initial fill: 1.23041 ms, changed=true
-Algorithm B iteration 1 took 5.85706 ms, changed=true
-Algorithm B iteration 2 took 5.76435 ms, changed=true
-Algorithm B iteration 3 took 5.64977 ms, changed=true
-Algorithm B iteration 4 took 5.57887 ms, changed=true
-Algorithm B iteration 5 took 5.55259 ms, changed=true
-Algorithm B iteration 6 took 5.53876 ms, changed=true
-Algorithm B iteration 7 took 5.53045 ms, changed=true
-Algorithm B iteration 8 took 5.53164 ms, changed=true
-Algorithm B iteration 9 took 5.53085 ms, changed=true
-Algorithm B iteration 10 took 5.53034 ms, changed=true
-Algorithm B iteration 11 took 5.53063 ms, changed=true
-Algorithm B iteration 12 took 5.53171 ms, changed=false
+Algorithm A total time: 267.925 ms
+Step allocate_bitset_matrix_device (B): 0.642615 ms
+Algorithm B initial fill: 1.71503 ms, changed=true
+Algorithm B iteration 1 took 6.1491 ms, changed=true
+Algorithm B iteration 2 took 6.04516 ms, changed=true
+Algorithm B iteration 3 took 5.93166 ms, changed=true
+Algorithm B iteration 4 took 5.85945 ms, changed=true
+Algorithm B iteration 5 took 5.8315 ms, changed=true
+Algorithm B iteration 6 took 5.81801 ms, changed=true
+Algorithm B iteration 7 took 5.81466 ms, changed=true
+Algorithm B iteration 8 took 5.7388 ms, changed=true
+Algorithm B iteration 9 took 5.53086 ms, changed=true
+Algorithm B iteration 10 took 5.53017 ms, changed=true
+Algorithm B iteration 11 took 5.52903 ms, changed=true
+Algorithm B iteration 12 took 5.53203 ms, changed=false
 Algorithm B iterations until fixed point: 12
-Algorithm B convert + external closure: 113.155 ms
+Algorithm B convert + external closure: 122.075 ms
 Algorithm B closure total pairs (including external): 7543811
-Algorithm B total time: 209.863 ms
-Algorithm C build_adjacency_from_edges: 124.332 ms
-Algorithm C compute_transitive_closure_serial: 11263.1 ms
-Algorithm C flatten_closure to pairs: 300.073 ms
-Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11687.8 ms
-Algorithm A vs B results equal? YES
-Algorithm A vs C results equal? YES
-Writing output file: 704.294 ms
+Algorithm B total time: 226.683 ms
+Algorithm A-serial build_adjacency_from_edges: 129.598 ms
+Algorithm A-serial iteration 1 took 222.817 ms, changed=true
+Algorithm A-serial iteration 2 took 562.868 ms, changed=true
+Algorithm A-serial iteration 3 took 1435.13 ms, changed=true
+Algorithm A-serial iteration 4 took 1888.99 ms, changed=true
+Algorithm A-serial iteration 5 took 1607.41 ms, changed=true
+Algorithm A-serial iteration 6 took 1549.11 ms, changed=false
+Algorithm A-serial iterations until fixed point: 6
+Algorithm A-serial compute_a_ser_closure: 8360.68 ms
+Algorithm A-serial flatten_closure to pairs: 52.756 ms
+Algorithm A-serial closure size: 7543811
+Algorithm A-serial total time: 8543.04 ms
+Algorithm B-serial build_adjacency_from_edges: 102.645 ms
+Algorithm B-serial iteration 1 took 439.193 ms, changed=true
+Algorithm B-serial iteration 2 took 616.528 ms, changed=true
+Algorithm B-serial iteration 3 took 658.763 ms, changed=true
+Algorithm B-serial iteration 4 took 667.309 ms, changed=true
+Algorithm B-serial iteration 5 took 590.552 ms, changed=true
+Algorithm B-serial iteration 6 took 430.371 ms, changed=true
+Algorithm B-serial iteration 7 took 265.457 ms, changed=true
+Algorithm B-serial iteration 8 took 167.4 ms, changed=true
+Algorithm B-serial iteration 9 took 90.3893 ms, changed=true
+Algorithm B-serial iteration 10 took 46.9538 ms, changed=true
+Algorithm B-serial iteration 11 took 21.7567 ms, changed=true
+Algorithm B-serial iteration 12 took 9.18444 ms, changed=true
+Algorithm B-serial iteration 13 took 6.07948 ms, changed=true
+Algorithm B-serial iteration 14 took 3.1958 ms, changed=true
+Algorithm B-serial iteration 15 took 1.53577 ms, changed=true
+Algorithm B-serial iteration 16 took 1.94095 ms, changed=true
+Algorithm B-serial iteration 17 took 0.545341 ms, changed=true
+Algorithm B-serial iteration 18 took 0.081323 ms, changed=true
+Algorithm B-serial iteration 19 took 0.01029 ms, changed=true
+Algorithm B-serial iteration 20 took 0.002354 ms, changed=true
+Algorithm B-serial iteration 21 took 0.000461 ms, changed=true
+Algorithm B-serial iteration 22 took 9e-05 ms, changed=false
+Algorithm B-serial iterations until fixed point: 22
+Algorithm B-serial compute_b_ser_closure: 4904.27 ms
+Algorithm B-serial flatten_closure to pairs: 375.5 ms
+Algorithm B-serial closure size: 7543811
+Algorithm B-serial total time: 5382.45 ms
+Algorithm A    vs B        results equal? YES
+Algorithm A    vs A-serial results equal? YES
+Algorithm A    vs B-serial results equal? YES
+Writing output file: 704.975 ms
 

@@ -14,69 +14,103 @@ AdjMap build_adjacency_from_edges(const std::vector<Edge> &edges) {
     return conn;
 }
 
-/**************************************************************
- * Host iteration algorithm C (serialized form of Algorithm A)
- **************************************************************/
-AdjMap compute_transitive_closure_serial(AdjMap conn, int max_iterations) {
+/****************************************************************
+ *  Algorithm A-serial: doubling transitive closure
+ *  conn is read-only. Each iteration copies prev into next and
+ *  adds edges reachable by composing prev with itself, doubling
+ *  the covered path length. The old prev is freed each iteration.
+ ****************************************************************/
+AdjMap compute_a_ser_closure(const AdjMap &conn) {
+    AdjMap prev = conn;
+
     int iter_count = 0;
 
-    for (int iter = 0; iter < max_iterations; ++iter) {
+    while (true) {
         auto ti0 = Clock::now();
 
-        AdjMap nxt;          // new edges of doubled length
+        AdjMap next = prev;  // next starts as a full copy; old prev freed below
         bool any_new = false;
 
-        for (auto &entry : conn) {
-            const std::int64_t s = entry.first;
-            auto &tset = entry.second;
-
+        for (const auto &[s, tset] : prev) {
             for (const auto t : tset) {
-                auto it_tTargets = conn.find(t);
-                if (it_tTargets == conn.end()) {
-                    continue; // t is not a source; nothing to join
+                auto prev_it = prev.find(t);
+                if (prev_it == prev.end()) continue;
+
+                for (const auto u : prev_it->second) {
+                    auto [_, inserted] = next[s].insert(u);
+                    if (inserted) any_new = true;
                 }
+            }
+        }
 
-                const auto &tTargets = it_tTargets->second;
+        auto ti1 = Clock::now();
+        ++iter_count;
+        std::cout << "Algorithm A-serial iteration " << iter_count << " took "
+                  << std::chrono::duration<double, std::milli>(ti1 - ti0).count()
+                  << " ms, changed=" << (any_new ? "true" : "false") << "\n";
 
-                for (const auto u : tTargets) {
-                    // Check if we already know s -> u from previous iterations
-                    auto &s_targets = conn[s];
-                    if (s_targets.find(u) != s_targets.end()) {
-                        continue;
-                    }
+        if (!any_new) break;
 
-                    // Check if it's already scheduled to be added this iteration
-                    auto &nxt_targets = nxt[s];
-                    auto [_, inserted] = nxt_targets.insert(u);
-                    if (inserted) {
-                        any_new = true;
+        prev = std::move(next);  // free old prev, adopt new one
+    }
+
+    std::cout << "Algorithm A-serial iterations until fixed point: " << iter_count << "\n";
+
+    return prev;
+}
+
+/****************************************************************
+ *  Algorithm B-serial: BFS transitive closure
+ *  conn is read-only throughout. Each iteration extends known
+ *  paths by one hop through conn. The frontier holds only the
+ *  edges discovered in the previous iteration and is freed when
+ *  replaced by the next frontier.
+ ****************************************************************/
+AdjMap compute_b_ser_closure(const AdjMap &conn) {
+    AdjMap closure = conn;   // accumulates all edges found so far
+    AdjMap frontier = conn;  // edges discovered in the last iteration
+
+    int iter_count = 0;
+
+    while (true) {
+        auto ti0 = Clock::now();
+
+        AdjMap next;
+
+        for (const auto &[s, tset] : frontier) {
+            auto &s_closure = closure[s];
+            for (const auto t : tset) {
+                auto conn_it = conn.find(t);
+                if (conn_it == conn.end()) continue;
+
+                for (const auto u : conn_it->second) {
+                    if (s_closure.find(u) == s_closure.end()) {
+                        next[s].insert(u);
                     }
                 }
             }
         }
 
-        // Merge nxt into conn (no-op when any_new is false)
-        for (auto &entry : nxt) {
-            const std::int64_t s = entry.first;
-            auto &new_targets = entry.second;
-            auto &existing = conn[s];  // creates empty set if absent
-            existing.insert(new_targets.begin(), new_targets.end());
+        // Merge next into closure
+        for (auto &[s, uset] : next) {
+            closure[s].insert(uset.begin(), uset.end());
         }
 
         auto ti1 = Clock::now();
         ++iter_count;
-        std::cout << "Algorithm C iteration " << iter_count << " took "
+        bool any_new = !next.empty();
+        std::cout << "Algorithm B-serial iteration " << iter_count << " took "
                   << std::chrono::duration<double, std::milli>(ti1 - ti0).count()
                   << " ms, changed=" << (any_new ? "true" : "false") << "\n";
 
-        if (!any_new) {
-            break; // reached fixed point
-        }
+        if (!any_new) break;
+
+        frontier = std::move(next);  // free old frontier, adopt new one
     }
 
-    std::cout << "Algorithm C iterations until fixed point: " << iter_count << "\n";
+    std::cout << "Algorithm B-serial iterations until fixed point: " << iter_count << "\n";
 
-    return conn;
+    return closure;
 }
 
 /****************************************************************

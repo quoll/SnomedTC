@@ -13,8 +13,8 @@
 // Algorithm B
 // run_algoB_initial and run_algoB_iterations are provided by iterative.cu
 
-// Algorithm C
-// build_adjacency_from_edges, compute_transitive_closure_serial, flatten_closure
+// Algorithm A-serial and Algorithm B-serial
+// build_adjacency_from_edges, compute_a_ser_closure, compute_b_ser_closure, flatten_closure
 // are provided by serial.cpp
 
 
@@ -163,49 +163,76 @@ int main(int argc, char **argv) {
         std::cout << "Algorithm B total time: "
                   << (common_time + std::chrono::duration<double, std::milli>(tB1 - tB0).count()) << " ms\n";
 
-        // 10. Algorithm C: host serialized form of Algorithm A
+        // 10. Algorithm A-serial: CPU doubling
         t0 = Clock::now();
-        auto tC0 = t0;
-        AdjMap conn0 = build_adjacency_from_edges(edges);
+        auto tASer0 = t0;
+        AdjMap connASer = build_adjacency_from_edges(edges);
         t1 = Clock::now();
-        std::cout << "Algorithm C build_adjacency_from_edges: "
+        std::cout << "Algorithm A-serial build_adjacency_from_edges: "
                   << std::chrono::duration<double, std::milli>(t1 - t0).count() << " ms\n";
         t0 = Clock::now();
-        auto conn_tc = compute_transitive_closure_serial(std::move(conn0));
+        AdjMap closureASer = compute_a_ser_closure(connASer);
         t1 = Clock::now();
-        std::cout << "Algorithm C compute_transitive_closure_serial: "
+        std::cout << "Algorithm A-serial compute_a_ser_closure: "
                   << std::chrono::duration<double, std::milli>(t1 - t0).count() << " ms\n";
         t0 = Clock::now();
-        ClosurePairs closureC_pairs = flatten_closure(conn_tc);
+        ClosurePairs closureASer_pairs = flatten_closure(closureASer);
         t1 = Clock::now();
-        auto tC1 = t1;
-        std::cout << "Algorithm C flatten_closure to pairs: "
+        auto tASer1 = t1;
+        std::cout << "Algorithm A-serial flatten_closure to pairs: "
                   << std::chrono::duration<double, std::milli>(t1 - t0).count() << " ms\n";
-        std::cout << "Algorithm C map-of-sets closure size: "
-                  << closureC_pairs.size() << "\n";
-        std::cout << "Algorithm C total time: "
-                  << std::chrono::duration<double, std::milli>(tC1 - tC0).count() << " ms\n";
+        std::cout << "Algorithm A-serial closure size: "
+                  << closureASer_pairs.size() << "\n";
+        std::cout << "Algorithm A-serial total time: "
+                  << std::chrono::duration<double, std::milli>(tASer1 - tASer0).count() << " ms\n";
 
-        // 11. Compare Algorithm A vs B vs C (sort + compare)
-        ClosurePairs sortedA = closureA_pairs;
-        ClosurePairs sortedB = closureB_pairs;
-        ClosurePairs sortedC = closureC_pairs;
-        std::sort(sortedA.begin(), sortedA.end());
-        std::sort(sortedB.begin(), sortedB.end());
-        std::sort(sortedC.begin(), sortedC.end());
+        // 11. Algorithm B-serial: CPU BFS
+        t0 = Clock::now();
+        auto tBSer0 = t0;
+        AdjMap connBSer = build_adjacency_from_edges(edges);
+        t1 = Clock::now();
+        std::cout << "Algorithm B-serial build_adjacency_from_edges: "
+                  << std::chrono::duration<double, std::milli>(t1 - t0).count() << " ms\n";
+        t0 = Clock::now();
+        AdjMap closureBSer = compute_b_ser_closure(connBSer);
+        t1 = Clock::now();
+        std::cout << "Algorithm B-serial compute_b_ser_closure: "
+                  << std::chrono::duration<double, std::milli>(t1 - t0).count() << " ms\n";
+        t0 = Clock::now();
+        ClosurePairs closureBSer_pairs = flatten_closure(closureBSer);
+        t1 = Clock::now();
+        auto tBSer1 = t1;
+        std::cout << "Algorithm B-serial flatten_closure to pairs: "
+                  << std::chrono::duration<double, std::milli>(t1 - t0).count() << " ms\n";
+        std::cout << "Algorithm B-serial closure size: "
+                  << closureBSer_pairs.size() << "\n";
+        std::cout << "Algorithm B-serial total time: "
+                  << std::chrono::duration<double, std::milli>(tBSer1 - tBSer0).count() << " ms\n";
 
-        std::cout << "Algorithm A vs B results equal? "
-                  << ((sortedA == sortedB) ? "YES" : "NO") << "\n";
-        std::cout << "Algorithm A vs C results equal? "
-                  << ((sortedA == sortedC) ? "YES" : "NO") << "\n";
+        // 12. Compare all four algorithms (sort + compare)
+        ClosurePairs sortedA    = closureA_pairs;
+        ClosurePairs sortedB    = closureB_pairs;
+        ClosurePairs sortedASer = closureASer_pairs;
+        ClosurePairs sortedBSer = closureBSer_pairs;
+        std::sort(sortedA.begin(),    sortedA.end());
+        std::sort(sortedB.begin(),    sortedB.end());
+        std::sort(sortedASer.begin(), sortedASer.end());
+        std::sort(sortedBSer.begin(), sortedBSer.end());
 
-        // 12. Cleanup device resources
+        std::cout << "Algorithm A    vs B        results equal? "
+                  << ((sortedA == sortedB)    ? "YES" : "NO") << "\n";
+        std::cout << "Algorithm A    vs A-serial results equal? "
+                  << ((sortedA == sortedASer) ? "YES" : "NO") << "\n";
+        std::cout << "Algorithm A    vs B-serial results equal? "
+                  << ((sortedA == sortedBSer) ? "YES" : "NO") << "\n";
+
+        // 13. Cleanup device resources
         free_csr_device(graph_dev);
         free_bitset_matrix_device(closureA_in);
         free_bitset_matrix_device(closureA_out);
         free_bitset_matrix_device(closureB_dev);
 
-        // 13. Write results
+        // 14. Write results
         t0 = Clock::now();
         std::ofstream file_out(output_path);
         for (const auto &p : closureA_pairs) {
