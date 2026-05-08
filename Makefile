@@ -1,8 +1,17 @@
 NVCC      := nvcc
 CPP       := g++
 NVCCFLAGS_COMMON := -O3 -std=c++20 -Xcompiler "-Wall -Wextra -fopenmp"
-CPPFLAGS  := -O3 -std=c++20 -Wall -Wextra
-LDFLAGS   :=
+
+# On macOS, g++ is Apple clang which needs -Xpreprocessor -fopenmp / -lomp.
+# On Linux (the cluster), GCC uses -fopenmp / -lgomp.
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+    CPPFLAGS := -O3 -std=c++20 -Wall -Wextra -Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include
+    LDFLAGS  := -lomp -L/opt/homebrew/opt/libomp/lib
+else
+    CPPFLAGS := -O3 -std=c++20 -Wall -Wextra -fopenmp
+    LDFLAGS  := -lgomp
+endif
 
 
 NVCCFLAGS_ARCH := \
@@ -32,10 +41,10 @@ algorithm_b: algorithm_b.o resulttx.o iterative.o graph_util.o
 	$(NVCC) $(NVCCFLAGS) -o $@ $^ $(LDFLAGS)
 
 algorithm_a_ser: algorithm_a_ser.o serial.o graph_util.o
-	$(CPP) -o $@ $^
+	$(CPP) -o $@ $^ $(LDFLAGS)
 
 algorithm_b_ser: algorithm_b_ser.o serial.o graph_util.o
-	$(CPP) -o $@ $^
+	$(CPP) -o $@ $^ $(LDFLAGS)
 
 snomed_tc.o:   snomed_tc.cu   common.cuh doubling.cuh iterative.cuh resulttx.cuh serial.h graph_util.h
 algorithm_a.o: algorithm_a.cu common.cuh doubling.cuh resulttx.cuh graph_util.h

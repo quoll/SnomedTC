@@ -28,16 +28,24 @@ AdjMap compute_a_ser_closure(const AdjMap &conn) {
     while (true) {
         auto ti0 = Clock::now();
 
-        AdjMap next = prev;  // next starts as a full copy; old prev freed below
+        AdjMap next = prev;  // next starts as a full copy; all keys pre-exist
         bool any_new = false;
 
-        for (const auto &[s, tset] : prev) {
+        std::vector<std::int64_t> sources;
+        sources.reserve(prev.size());
+        for (const auto &kv : prev) sources.push_back(kv.first);
+
+        int n = static_cast<int>(sources.size());
+        #pragma omp parallel for schedule(dynamic) reduction(||:any_new)
+        for (int i = 0; i < n; ++i) {
+            const auto s = sources[i];
+            const auto &tset = prev.at(s);
+            auto &s_next = next.at(s);  // safe: next = prev, so s is a pre-existing key
             for (const auto t : tset) {
                 auto prev_it = prev.find(t);
                 if (prev_it == prev.end()) continue;
-
                 for (const auto u : prev_it->second) {
-                    auto [_, inserted] = next[s].insert(u);
+                    auto [_, inserted] = s_next.insert(u);
                     if (inserted) any_new = true;
                 }
             }
@@ -76,34 +84,54 @@ AdjMap compute_b_ser_closure(const AdjMap &conn) {
         auto ti0 = Clock::now();
 
         AdjMap next;
+        // Pre-populate next with empty entries so parallel threads can call
+        // next.at(s) without structural map modification during the loop.
+        for (const auto &kv : frontier) next[kv.first];
 
-        for (const auto &[s, tset] : frontier) {
-            auto &s_closure = closure[s];
+        std::vector<std::int64_t> sources;
+        sources.reserve(frontier.size());
+        for (const auto &kv : frontier) sources.push_back(kv.first);
+
+        bool any_new = false;
+
+        int n = static_cast<int>(sources.size());
+        #pragma omp parallel for schedule(dynamic) reduction(||:any_new)
+        for (int i = 0; i < n; ++i) {
+            const auto s = sources[i];
+            const auto &tset = frontier.at(s);
+            const auto &s_closure = closure.at(s);  // read-only; key always exists
+            auto &s_next = next.at(s);               // pre-existing key; unique per thread
             for (const auto t : tset) {
                 auto conn_it = conn.find(t);
                 if (conn_it == conn.end()) continue;
-
                 for (const auto u : conn_it->second) {
                     if (s_closure.find(u) == s_closure.end()) {
-                        next[s].insert(u);
+                        s_next.insert(u);
+                        any_new = true;
                     }
                 }
             }
         }
 
-        // Merge next into closure
-        for (auto &[s, uset] : next) {
-            closure[s].insert(uset.begin(), uset.end());
+        // Merge next into closure (serial; next and closure are disjoint per key)
+        for (auto &kv : next) {
+            if (!kv.second.empty())
+                closure[kv.first].insert(kv.second.begin(), kv.second.end());
         }
 
         auto ti1 = Clock::now();
         ++iter_count;
-        bool any_new = !next.empty();
         std::cout << "Algorithm B-serial iteration " << iter_count << " took "
                   << std::chrono::duration<double, std::milli>(ti1 - ti0).count()
                   << " ms, changed=" << (any_new ? "true" : "false") << "\n";
 
         if (!any_new) break;
+
+        // Drop empty entries before adopting next as the new frontier
+        for (auto it = next.begin(); it != next.end(); ) {
+            if (it->second.empty()) it = next.erase(it);
+            else ++it;
+        }
 
         frontier = std::move(next);  // free old frontier, adopt new one
     }
