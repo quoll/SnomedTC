@@ -72,11 +72,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 116.284 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 176.093 ms
-Algorithm C build_adjacency_from_edges: 104.184 ms
-Algorithm C compute_transitive_closure_serial: 10585.1 ms
-Algorithm C flatten_closure to pairs: 427.286 ms
+Algorithm C build_adjacency_from_edges: 102.178 ms
+Algorithm C iteration 1 took 419.494 ms, changed=true
+Algorithm C iteration 2 took 990.73 ms, changed=true
+Algorithm C iteration 3 took 2277.17 ms, changed=true
+Algorithm C iteration 4 took 2185.72 ms, changed=true
+Algorithm C iteration 5 took 1969.39 ms, changed=true
+Algorithm C iteration 6 took 1950.15 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10541.2 ms
+Algorithm C flatten_closure to pairs: 423.095 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11116.8 ms
+Algorithm C total time: 11066.4 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 538.026 ms
@@ -124,11 +131,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 116.758 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 176.363 ms
-Algorithm C build_adjacency_from_edges: 106.924 ms
-Algorithm C compute_transitive_closure_serial: 10824.1 ms
-Algorithm C flatten_closure to pairs: 436.017 ms
+Algorithm C build_adjacency_from_edges: 100.924 ms
+Algorithm C iteration 1 took 419.99 ms, changed=true
+Algorithm C iteration 2 took 981.892 ms, changed=true
+Algorithm C iteration 3 took 2276.46 ms, changed=true
+Algorithm C iteration 4 took 2183.59 ms, changed=true
+Algorithm C iteration 5 took 1968.64 ms, changed=true
+Algorithm C iteration 6 took 1952.8 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10530.7 ms
+Algorithm C flatten_closure to pairs: 423.419 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11367.2 ms
+Algorithm C total time: 11055.1 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 537.178 ms
@@ -176,11 +190,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 116.737 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 177.663 ms
-Algorithm C build_adjacency_from_edges: 107.181 ms
-Algorithm C compute_transitive_closure_serial: 10769.8 ms
-Algorithm C flatten_closure to pairs: 433.411 ms
+Algorithm C build_adjacency_from_edges: 102.349 ms
+Algorithm C iteration 1 took 419.219 ms, changed=true
+Algorithm C iteration 2 took 978.237 ms, changed=true
+Algorithm C iteration 3 took 2274.82 ms, changed=true
+Algorithm C iteration 4 took 2189.41 ms, changed=true
+Algorithm C iteration 5 took 1970.28 ms, changed=true
+Algorithm C iteration 6 took 1947.43 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10525.7 ms
+Algorithm C flatten_closure to pairs: 425.049 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11310.6 ms
+Algorithm C total time: 11053.1 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 536.387 ms
@@ -228,11 +249,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 115.56 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 174.789 ms
-Algorithm C build_adjacency_from_edges: 105.426 ms
-Algorithm C compute_transitive_closure_serial: 10586.6 ms
-Algorithm C flatten_closure to pairs: 425.258 ms
+Algorithm C build_adjacency_from_edges: 102.665 ms
+Algorithm C iteration 1 took 422.311 ms, changed=true
+Algorithm C iteration 2 took 984.599 ms, changed=true
+Algorithm C iteration 3 took 2289.44 ms, changed=true
+Algorithm C iteration 4 took 2200.48 ms, changed=true
+Algorithm C iteration 5 took 1984.58 ms, changed=true
+Algorithm C iteration 6 took 1966.66 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10594.4 ms
+Algorithm C flatten_closure to pairs: 423.316 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11117.5 ms
+Algorithm C total time: 11120.4 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 536.898 ms
@@ -280,11 +308,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 116.713 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 176.315 ms
-Algorithm C build_adjacency_from_edges: 106.507 ms
-Algorithm C compute_transitive_closure_serial: 10690.7 ms
-Algorithm C flatten_closure to pairs: 428.231 ms
+Algorithm C build_adjacency_from_edges: 102.51 ms
+Algorithm C iteration 1 took 420.824 ms, changed=true
+Algorithm C iteration 2 took 981.866 ms, changed=true
+Algorithm C iteration 3 took 2278.24 ms, changed=true
+Algorithm C iteration 4 took 2185.67 ms, changed=true
+Algorithm C iteration 5 took 1969.99 ms, changed=true
+Algorithm C iteration 6 took 1952.15 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10540.2 ms
+Algorithm C flatten_closure to pairs: 423.281 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11225.7 ms
+Algorithm C total time: 11066 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 536.113 ms
@@ -332,11 +367,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 116.311 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 176.866 ms
-Algorithm C build_adjacency_from_edges: 104.436 ms
-Algorithm C compute_transitive_closure_serial: 10580.1 ms
-Algorithm C flatten_closure to pairs: 426.136 ms
+Algorithm C build_adjacency_from_edges: 102.562 ms
+Algorithm C iteration 1 took 420.439 ms, changed=true
+Algorithm C iteration 2 took 983.797 ms, changed=true
+Algorithm C iteration 3 took 2290.38 ms, changed=true
+Algorithm C iteration 4 took 2203.07 ms, changed=true
+Algorithm C iteration 5 took 1983.39 ms, changed=true
+Algorithm C iteration 6 took 1964.63 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10592.9 ms
+Algorithm C flatten_closure to pairs: 422.987 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11110.9 ms
+Algorithm C total time: 11118.4 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 539.957 ms
@@ -384,11 +426,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 114.516 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 174.525 ms
-Algorithm C build_adjacency_from_edges: 104.272 ms
-Algorithm C compute_transitive_closure_serial: 10586 ms
-Algorithm C flatten_closure to pairs: 427.579 ms
+Algorithm C build_adjacency_from_edges: 102.805 ms
+Algorithm C iteration 1 took 418.423 ms, changed=true
+Algorithm C iteration 2 took 977.584 ms, changed=true
+Algorithm C iteration 3 took 2282.12 ms, changed=true
+Algorithm C iteration 4 took 2185.14 ms, changed=true
+Algorithm C iteration 5 took 1969.21 ms, changed=true
+Algorithm C iteration 6 took 1948.47 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10527.4 ms
+Algorithm C flatten_closure to pairs: 423.716 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11118 ms
+Algorithm C total time: 11053.9 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 537.553 ms
@@ -436,11 +485,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 117.214 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 176.392 ms
-Algorithm C build_adjacency_from_edges: 106.967 ms
-Algorithm C compute_transitive_closure_serial: 10787.6 ms
-Algorithm C flatten_closure to pairs: 431.03 ms
+Algorithm C build_adjacency_from_edges: 103.082 ms
+Algorithm C iteration 1 took 420.301 ms, changed=true
+Algorithm C iteration 2 took 978.735 ms, changed=true
+Algorithm C iteration 3 took 2274.67 ms, changed=true
+Algorithm C iteration 4 took 2183.43 ms, changed=true
+Algorithm C iteration 5 took 1968.13 ms, changed=true
+Algorithm C iteration 6 took 1949.68 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10522.6 ms
+Algorithm C flatten_closure to pairs: 423.617 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11325.8 ms
+Algorithm C total time: 11049.3 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 537.42 ms
@@ -488,11 +544,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 115.143 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 174.244 ms
-Algorithm C build_adjacency_from_edges: 108.841 ms
-Algorithm C compute_transitive_closure_serial: 10972.9 ms
-Algorithm C flatten_closure to pairs: 429.758 ms
+Algorithm C build_adjacency_from_edges: 101.27 ms
+Algorithm C iteration 1 took 418.243 ms, changed=true
+Algorithm C iteration 2 took 978.627 ms, changed=true
+Algorithm C iteration 3 took 2289.06 ms, changed=true
+Algorithm C iteration 4 took 2185.78 ms, changed=true
+Algorithm C iteration 5 took 1968.45 ms, changed=true
+Algorithm C iteration 6 took 1950.3 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10538.8 ms
+Algorithm C flatten_closure to pairs: 422.899 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11511.7 ms
+Algorithm C total time: 11063 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 539.046 ms
@@ -540,11 +603,18 @@ Algorithm B iterations until fixed point: 12
 Algorithm B convert + external closure: 114.975 ms
 Algorithm B closure total pairs (including external): 7543811
 Algorithm B total time: 174.172 ms
-Algorithm C build_adjacency_from_edges: 105.109 ms
-Algorithm C compute_transitive_closure_serial: 10631.6 ms
-Algorithm C flatten_closure to pairs: 429.21 ms
+Algorithm C build_adjacency_from_edges: 103.244 ms
+Algorithm C iteration 1 took 421.19 ms, changed=true
+Algorithm C iteration 2 took 980.984 ms, changed=true
+Algorithm C iteration 3 took 2279.47 ms, changed=true
+Algorithm C iteration 4 took 2189.29 ms, changed=true
+Algorithm C iteration 5 took 2024.59 ms, changed=true
+Algorithm C iteration 6 took 1951.55 ms, changed=false
+Algorithm C iterations until fixed point: 6
+Algorithm C compute_transitive_closure_serial: 10594.6 ms
+Algorithm C flatten_closure to pairs: 422.762 ms
 Algorithm C map-of-sets closure size: 7543811
-Algorithm C total time: 11166.1 ms
+Algorithm C total time: 11120.7 ms
 Algorithm A vs B results equal? YES
 Algorithm A vs C results equal? YES
 Writing output file: 537.902 ms
