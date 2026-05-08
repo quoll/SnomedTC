@@ -18,7 +18,11 @@ AdjMap build_adjacency_from_edges(const std::vector<Edge> &edges) {
  * Host iteration algorithm C (serialized form of Algorithm A)
  **************************************************************/
 AdjMap compute_transitive_closure_serial(AdjMap conn, int max_iterations) {
+    int iter_count = 0;
+
     for (int iter = 0; iter < max_iterations; ++iter) {
+        auto ti0 = Clock::now();
+
         AdjMap nxt;          // new edges of doubled length
         bool any_new = false;
 
@@ -51,18 +55,26 @@ AdjMap compute_transitive_closure_serial(AdjMap conn, int max_iterations) {
             }
         }
 
-        if (!any_new) {
-            break; // reached fixed point
-        }
-
-        // Merge nxt into conn
+        // Merge nxt into conn (no-op when any_new is false)
         for (auto &entry : nxt) {
             const std::int64_t s = entry.first;
             auto &new_targets = entry.second;
             auto &existing = conn[s];  // creates empty set if absent
             existing.insert(new_targets.begin(), new_targets.end());
         }
+
+        auto ti1 = Clock::now();
+        ++iter_count;
+        std::cout << "Algorithm C iteration " << iter_count << " took "
+                  << std::chrono::duration<double, std::milli>(ti1 - ti0).count()
+                  << " ms, changed=" << (any_new ? "true" : "false") << "\n";
+
+        if (!any_new) {
+            break; // reached fixed point
+        }
     }
+
+    std::cout << "Algorithm C iterations until fixed point: " << iter_count << "\n";
 
     return conn;
 }

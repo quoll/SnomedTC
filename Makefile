@@ -2,7 +2,7 @@ NVCC      := nvcc
 CPP       := g++
 NVCCFLAGS_COMMON := -O3 -std=c++20 -Xcompiler "-Wall -Wextra -fopenmp"
 CPPFLAGS  := -O3 -std=c++20 -Wall -Wextra
-LDFLAGS   := -lgomp
+LDFLAGS   :=
 
 
 NVCCFLAGS_ARCH := \
