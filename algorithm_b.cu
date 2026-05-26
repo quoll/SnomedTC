@@ -74,19 +74,18 @@ int main(int argc, char **argv) {
                   << std::chrono::duration<double, std::milli>(t1 - t0).count()
                   << " ms\n";
 
-        bool changed = false;
-
         t0 = Clock::now();
-        run_algoB_initial(graph_dev, closureB_dev, changed);
+        FrontierDevice frontierB_dev = run_algoB_initial(graph_dev, closureB_dev);
         t1 = Clock::now();
         std::cout << "Algorithm B initial fill: "
                   << std::chrono::duration<double, std::milli>(t1 - t0).count()
-                  << " ms, changed=" << (changed ? "true" : "false") << "\n";
+                  << " ms\n";
 
+        bool changed = true;
         int iter_countB = 0;
         while (changed) {
             auto ti0 = Clock::now();
-            changed = run_algoB_iterations(graph_dev, closureB_dev);
+            changed = run_algoB_iterations(graph_dev, closureB_dev, frontierB_dev);
             auto ti1 = Clock::now();
             ++iter_countB;
             std::cout << "Algorithm B iteration " << iter_countB << " took "
@@ -110,6 +109,7 @@ int main(int argc, char **argv) {
         // 7. Cleanup device resources
         free_csr_device(graph_dev);
         free_bitset_matrix_device(closureB_dev);
+        free_frontier_device(frontierB_dev);
 
         // 8. Write results
         t0 = Clock::now();
